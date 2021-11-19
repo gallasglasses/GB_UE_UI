@@ -2,6 +2,8 @@
 
 #include "Components/HASHealthComponent.h"
 #include "GameFramework/Actor.h"
+#include "Dev/HASIceDamageType.h"
+#include "Dev/HASFireDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(HealthComponentLog, All, All);
 
@@ -31,4 +33,16 @@ void UHASHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 {
 	Health -= Damage;
 	UE_LOG(HealthComponentLog, Display, TEXT("Damage : %f"), Damage);
+
+	if (DamageType)
+	{
+		if (DamageType->IsA<UHASFireDamageType>())
+		{
+			UE_LOG(HealthComponentLog, Display, TEXT("So hoooot!"));
+		}
+		else if (DamageType->IsA<UHASIceDamageType>())
+		{
+			UE_LOG(HealthComponentLog, Display, TEXT("So cooold!"));
+		}
+	}
 }

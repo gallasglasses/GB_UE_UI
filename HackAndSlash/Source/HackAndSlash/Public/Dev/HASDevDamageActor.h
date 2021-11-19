@@ -30,7 +30,10 @@ public:
 	bool DoFullDamage = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FColor SphereColor = FColor::Red;
+		FColor SphereColor = FColor::Red;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UDamageType> DamageType;
 
 protected:
 	// Called when the game starts or when spawned
