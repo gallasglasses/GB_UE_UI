@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHASHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -38,11 +38,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float LifeSpanOnDeath = 5.0f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -61,7 +64,10 @@ public:
 	float GetMovementDirection() const;
 
 private:
-	
+
+	UFUNCTION()
+		void OnGroundLanded(const FHitResult& Hit);
+
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void OnStartRunning();
@@ -71,7 +77,4 @@ private:
 
 	bool bWantsToRun = false;
 	bool bIsMovingForward = false;
-
-	UFUNCTION()
-	void OnGroundLanded(const FHitResult& Hit);
 };

@@ -6,8 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "HASHealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDeath)
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HACKANDSLASH_API UHASHealthComponent : public UActorComponent
@@ -17,16 +17,15 @@ class HACKANDSLASH_API UHASHealthComponent : public UActorComponent
 public:
 	UHASHealthComponent();
 
-	FOnDeath OnDeath;
-	FOnHealthChanged OnHealthChanged;
+	FOnDeathSignature OnDeath;
+	FOnHealthChangedSignature OnHealthChanged;
+
+	UFUNCTION(BlueprintCallable)
+		bool IsDead() const;
 
 	float GetHealth() const;
 
-	UFUNCTION(BlueprintCallable)
-	bool IsDead() const;
-
 protected:
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
 		float MaxHealth = 100.0f;
@@ -43,15 +42,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "10.0"), meta = (EditCondition = "AutoHeal"))
 		float HealModifier = 5.0f;
 
+	virtual void BeginPlay() override;
+
 private:
 
-	void HealUpdate();
-	void SetHealth(float NewHealth);
+	FTimerHandle HealTimerHandle;
 
 	UFUNCTION()
 		void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	FTimerHandle HealTimerHandle;
+	void HealUpdate();
+	void SetHealth(float NewHealth);
 
 	float Health = 0.0f;
 };
