@@ -8,6 +8,7 @@
 #include "Components/HASCharacterMovementComponent.h"
 #include "Components/HASHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -119,6 +120,11 @@ void AHASBaseCharacter::OnDeath()
 	PlayAnimMontage(DeathAnimMontage);
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(5.0f);
+
+	if (Controller)
+	{
+		Controller->ChangeState(NAME_Spectating);
+	}
 }
 
 void AHASBaseCharacter::OnHealthChanged(float Health)
