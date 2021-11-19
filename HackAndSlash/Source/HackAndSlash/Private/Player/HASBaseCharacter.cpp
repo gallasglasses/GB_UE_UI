@@ -43,15 +43,17 @@ void AHASBaseCharacter::BeginPlay()
 	
 	check(HealthComponent);
 	check(HealthTextComponent);
+	check(GetCharacterMovement());
+
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &AHASBaseCharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &AHASBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
 void AHASBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	const auto Health = HealthComponent->GetHealth();
-	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
@@ -109,5 +111,18 @@ void AHASBaseCharacter::OnStartRunning()
 void AHASBaseCharacter::OnStopRunning()
 {
 	bWantsToRun = false;
+}
+
+void AHASBaseCharacter::OnDeath()
+{
+	UE_LOG(BaseCharacterLog, Display, TEXT("%s, you are dead!"), *GetName());
+	PlayAnimMontage(DeathAnimMontage);
+	GetCharacterMovement()->DisableMovement();
+	SetLifeSpan(5.0f);
+}
+
+void AHASBaseCharacter::OnHealthChanged(float Health)
+{
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 

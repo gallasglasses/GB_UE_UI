@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UHASHealthComponent;
 class UTextRenderComponent;
+class UAnimMontage;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
@@ -34,6 +35,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UTextRenderComponent* HealthTextComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* DeathAnimMontage;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -48,7 +52,7 @@ public:
 	bool IsRunning() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-		float GetMovementDirection() const;
+	float GetMovementDirection() const;
 
 private:
 	
@@ -56,6 +60,8 @@ private:
 	void MoveRight(float Amount);
 	void OnStartRunning();
 	void OnStopRunning();
+	void OnDeath();
+	void OnHealthChanged(float Health);
 
 	bool bWantsToRun = false;
 	bool bIsMovingForward = false;

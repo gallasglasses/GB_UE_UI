@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "HASHealthComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HACKANDSLASH_API UHASHealthComponent : public UActorComponent
@@ -15,7 +17,13 @@ class HACKANDSLASH_API UHASHealthComponent : public UActorComponent
 public:
 	UHASHealthComponent();
 
+	FOnDeath OnDeath;
+	FOnHealthChanged OnHealthChanged;
+
 	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsDead() const;
 
 protected:
 	virtual void BeginPlay() override;

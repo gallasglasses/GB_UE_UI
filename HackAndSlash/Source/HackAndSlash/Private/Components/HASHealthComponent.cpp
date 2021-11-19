@@ -2,8 +2,6 @@
 
 #include "Components/HASHealthComponent.h"
 #include "GameFramework/Actor.h"
-#include "Dev/HASIceDamageType.h"
-#include "Dev/HASFireDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(HealthComponentLog, All, All);
 
@@ -17,11 +15,17 @@ float UHASHealthComponent::GetHealth() const
 	return Health;
 }
 
+bool UHASHealthComponent::IsDead() const
+{
+	return Health <= 0.0f;
+}
+
 void UHASHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Health = MaxHealth;
+	OnHealthChanged.Broadcast(Health);
 	AActor* ComponentOwner = GetOwner();
 	if (ComponentOwner)
 	{
@@ -31,18 +35,15 @@ void UHASHealthComponent::BeginPlay()
 
 void UHASHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	Health -= Damage;
-	UE_LOG(HealthComponentLog, Display, TEXT("Damage : %f"), Damage);
-
-	if (DamageType)
+	if (Damage <= 0.0f || IsDead())
 	{
-		if (DamageType->IsA<UHASFireDamageType>())
-		{
-			UE_LOG(HealthComponentLog, Display, TEXT("So hoooot!"));
-		}
-		else if (DamageType->IsA<UHASIceDamageType>())
-		{
-			UE_LOG(HealthComponentLog, Display, TEXT("So cooold!"));
-		}
+		return;
+	}
+	Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+	OnHealthChanged.Broadcast(Health);
+
+	if (IsDead())
+	{
+		OnDeath.Broadcast();
 	}
 }
