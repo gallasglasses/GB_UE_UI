@@ -49,6 +49,8 @@ void AHASBaseCharacter::BeginPlay()
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &AHASBaseCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &AHASBaseCharacter::OnHealthChanged);
+
+	LandedDelegate.AddDynamic(this, &AHASBaseCharacter::OnGroundLanded);
 }
 
 // Called every frame
@@ -130,5 +132,20 @@ void AHASBaseCharacter::OnDeath()
 void AHASBaseCharacter::OnHealthChanged(float Health)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void AHASBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+	UE_LOG(BaseCharacterLog, Display, TEXT("On landed: %f"), FallVelocityZ);
+
+	if (FallVelocityZ < LandedDamageVelocity.X)
+	{
+		return;
+	}
+
+	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+	UE_LOG(BaseCharacterLog, Display, TEXT("FinalDamage: %f"), FinalDamage);
+	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
 
