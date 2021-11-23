@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/HASGameHUD.h"
 #include "HackAndSlashGameModeBase.generated.h"
 
 /**
@@ -16,4 +17,11 @@ class HACKANDSLASH_API AHackAndSlashGameModeBase : public AGameModeBase
 	
 public:
 	AHackAndSlashGameModeBase();
+
+// 	FOnMatchStateChangedSignature OnMatchStateChanged;
+// 
+// private:
+// 	EHASMatchState MatchState = EHASMatchState::WaitingToStart;
+// 
+// 	void SetMatchState(EHASMatchState State);
 };

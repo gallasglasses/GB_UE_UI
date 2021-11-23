@@ -15,8 +15,10 @@ public class HackAndSlash : ModuleRules
 		PrivateIncludePaths.AddRange(new string[] 
 		{ 
 			"HackAndSlash/Public/Player",
-			"HackAndSlash/Public/Components"
-		});
+			"HackAndSlash/Public/Components",
+            "HackAndSlash/Public/Dev",
+            "HackAndSlash/Public/UI"
+        });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		

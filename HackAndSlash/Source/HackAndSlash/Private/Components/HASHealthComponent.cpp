@@ -12,6 +12,11 @@ UHASHealthComponent::UHASHealthComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+float UHASHealthComponent::GetHealthPercent() const
+{
+	return Health / MaxHealth;
+}
+
 float UHASHealthComponent::GetHealth() const
 {
 	return Health;
@@ -25,6 +30,8 @@ bool UHASHealthComponent::IsDead() const
 void UHASHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	check(MaxHealth > 0);
 
 	SetHealth(MaxHealth);
 
@@ -67,6 +74,10 @@ void UHASHealthComponent::HealUpdate()
 
 void UHASHealthComponent::SetHealth(float NewHealth)
 {
-	Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
-	OnHealthChanged.Broadcast(Health);
+	const auto NextHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+	const auto HealthDelta = NextHealth - Health;
+
+	UE_LOG(HealthComponentLog, Display, TEXT("Delta %f Health %f NextHealth %f"), HealthDelta, Health, NextHealth);
+	Health = NextHealth;
+	OnHealthChanged.Broadcast(Health, HealthDelta);
 }

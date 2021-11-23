@@ -7,7 +7,7 @@
 #include "HASHealthComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HACKANDSLASH_API UHASHealthComponent : public UActorComponent
@@ -20,8 +20,11 @@ public:
 	FOnDeathSignature OnDeath;
 	FOnHealthChangedSignature OnHealthChanged;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Health")
 		bool IsDead() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		float GetHealthPercent() const;
 
 	float GetHealth() const;
 
