@@ -13,5 +13,7 @@ UCLASS()
 class HACKANDSLASH_API AHASPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+		virtual void BeginPlay() override;
 };

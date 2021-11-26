@@ -6,5 +6,5 @@
 
 void AHASPlayerController::BeginPlay()
 {
-	SetInputMode(FInputModeGameOnly());
+	SetInputMode(FInputModeGameAndUI());
 }
