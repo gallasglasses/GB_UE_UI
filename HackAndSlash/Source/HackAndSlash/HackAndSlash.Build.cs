@@ -17,7 +17,10 @@ public class HackAndSlash : ModuleRules
 			"HackAndSlash/Public/Player",
 			"HackAndSlash/Public/Components",
             "HackAndSlash/Public/Dev",
-            "HackAndSlash/Public/UI"
+            "HackAndSlash/Public/UI",
+            "HackAndSlash/Public/Animations",
+			"HackAndSlash/Public/Menu",
+            "HackAndSlash/Public/Menu/UI"
         });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

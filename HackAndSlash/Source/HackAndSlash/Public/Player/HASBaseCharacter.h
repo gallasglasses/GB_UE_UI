@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UHASHealthComponent;
 class UTextRenderComponent;
 class UAnimMontage;
+class UBoxComponent;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
@@ -35,8 +36,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UTextRenderComponent* HealthTextComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* AxeTriggerHitComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* MeleeAttackAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UAnimMontage* HitReactAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);
@@ -46,6 +56,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	float LifeSpanOnDeath = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponDamage")
+	float WeaponDamageAmount = 10.0f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -59,22 +72,38 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	bool IsRunning() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool IsAttacking() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
 private:
+	FTimerHandle MeleeAttackTimerHandle;
+	APlayerController* GetPlayerController() const;
 
 	UFUNCTION()
 		void OnGroundLanded(const FHitResult& Hit);
-
+	UFUNCTION()
+		void OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
 	void OnStartRunning();
 	void OnStopRunning();
 	void OnDeath();
 	void OnHealthChanged(float Health, float HealthDelta);
+	void MeleeAttack();
+	void OnStartAttacking();
+	void OnStopAttacking();
+	void InitAnimations();
+	
+	//void OnDealDamage();
+	void MakeDamage(const FHitResult& HitResult);
 
 	bool bWantsToRun = false;
+	bool bIsAttacking = false;
 	bool bIsMovingForward = false;
+	bool bIsDamageDone = false;
 };

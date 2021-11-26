@@ -2,12 +2,15 @@
 
 
 #include "Player/HASBaseCharacter.h"
+#include "Animations/HASDealDamageAnimNotifyState.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/HASCharacterMovementComponent.h"
 #include "Components/HASHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
@@ -25,7 +28,7 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 	SpringArm->bInheritRoll = false;
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->TargetArmLength = 400.0f;
-	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 100.0f);
+	SpringArm->SocketOffset = FVector(0.0f, 100.0f, 100.0f);
 	SpringArm->SetRelativeRotation(FRotator(0.0f, -15.0f, 0.0f));
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
@@ -35,6 +38,15 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
+	HealthTextComponent->bOwnerNoSee = true;
+	HealthTextComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 160.0f));
+	HealthTextComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+
+	AxeTriggerHitComponent = CreateDefaultSubobject<UBoxComponent>("AxeTriggerHitComponent");
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
+	AxeTriggerHitComponent->AttachToComponent(GetMesh(), AttachmentRules, "FX_Sweep");
+	AxeTriggerHitComponent->OnComponentBeginOverlap.AddDynamic(this, &AHASBaseCharacter::OnOverlapHit);
+	AxeTriggerHitComponent->IgnoreActorWhenMoving(GetOwner(), true);
 }
 
 // Called when the game starts or when spawned
@@ -74,11 +86,17 @@ void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHASBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHASBaseCharacter::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHASBaseCharacter::OnStopRunning);
+	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &AHASBaseCharacter::MeleeAttack);
 }
 
 bool AHASBaseCharacter::IsRunning() const
 {
 	return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
+}
+
+bool AHASBaseCharacter::IsAttacking() const
+{
+	return bIsAttacking;
 }
 
 float AHASBaseCharacter::GetMovementDirection() const
@@ -130,11 +148,101 @@ void AHASBaseCharacter::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AHASBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void AHASBaseCharacter::MeleeAttack()
+{
+	if (IsAttacking())
+	{
+		return;
+	}
+	OnStartAttacking();
+	UE_LOG(BaseCharacterLog, Display, TEXT("SLASH!"));
+	GetWorld()->GetTimerManager().SetTimer(MeleeAttackTimerHandle, this, &AHASBaseCharacter::OnStopAttacking, MeleeAttackAnimMontage->CalculateSequenceLength(), false);
+}
+
+void AHASBaseCharacter::OnStartAttacking()
+{
+	bIsAttacking = true;
+	if (bIsAttacking)
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("1 Attack"));
+		UE_LOG(BaseCharacterLog, Display, TEXT("time : %f"), MeleeAttackAnimMontage->CalculateSequenceLength());
+	}
+	else
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("1 Not Attack"));
+	}
+	PlayAnimMontage(MeleeAttackAnimMontage);
+	//InitAnimations();
+}
+
+void AHASBaseCharacter::OnStopAttacking()
+{
+	bIsAttacking = false; 
+	bIsDamageDone = false;
+	if (bIsAttacking)
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("2 Attack"));
+	}
+	else
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("2 Not Attack"));
+	}
+	GetWorld()->GetTimerManager().ClearTimer(MeleeAttackTimerHandle);
+}
+
+//void AHASBaseCharacter::InitAnimations()
+//{
+//	if (!MeleeAttackAnimMontage)
+//	{
+//		return;
+//	}
+//	const auto NotifyEvents = MeleeAttackAnimMontage->Notifies;
+//	for (auto NotifyEvent : NotifyEvents)
+//	{
+//		UHASDealDamageAnimNotifyState* DealDamageNotify = Cast<UHASDealDamageAnimNotifyState>(NotifyEvent.NotifyStateClass);
+//		if (DealDamageNotify)
+//		{
+//			DealDamageNotify->OnNotifiedStateSignature.AddUObject(this, &AHASBaseCharacter::OnOverlapHit);
+//			break;
+//		}
+//	}
+//}
+
+void AHASBaseCharacter::OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (IsAttacking())
+	{
+		const auto HitActor = SweepResult.GetActor();
+		if (!HitActor)
+		{
+			return;
+		}
+		if (HitActor == this)
+		{
+			return;
+		}
+		UE_LOG(BaseCharacterLog, Display, TEXT("%s, you got damage"), *SweepResult.GetActor()->GetName());
+		MakeDamage(SweepResult);
+	}
+}
+
+void AHASBaseCharacter::MakeDamage(const FHitResult& HitResult)
+{
+	const auto HitActor = HitResult.GetActor();
+
+	if (!bIsDamageDone)
+	{
+		HitActor->TakeDamage(WeaponDamageAmount, FDamageEvent{}, GetPlayerController(), this);
+		bIsDamageDone = true;
+	}
 }
 
 void AHASBaseCharacter::OnGroundLanded(const FHitResult& Hit)
@@ -152,3 +260,12 @@ void AHASBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
 
+APlayerController* AHASBaseCharacter::GetPlayerController() const
+{
+	const auto Player = Cast<ACharacter>(GetOwner());
+	if (!Player)
+	{
+		return nullptr;
+	}
+	return Player->GetController<APlayerController>();
+}
