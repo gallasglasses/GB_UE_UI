@@ -12,6 +12,7 @@ class UHASHealthComponent;
 class UTextRenderComponent;
 class UAnimMontage;
 class UBoxComponent;
+class UWidgetComponent;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
@@ -38,6 +39,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* AxeTriggerHitComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* HealthWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;

@@ -10,8 +10,10 @@
 #include "Components/HASCharacterMovementComponent.h"
 #include "Components/HASHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
+#include "UI/HASHealthBarWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -42,6 +44,13 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 	HealthTextComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 160.0f));
 	HealthTextComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
+	HealthWidgetComponent->SetupAttachment(GetRootComponent());
+	HealthWidgetComponent->bOwnerNoSee = true;
+	//HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthWidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 160.0f));
+	HealthWidgetComponent->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
+
 	AxeTriggerHitComponent = CreateDefaultSubobject<UBoxComponent>("AxeTriggerHitComponent");
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::KeepRelative, false);
 	AxeTriggerHitComponent->AttachToComponent(GetMesh(), AttachmentRules, "FX_Sweep");
@@ -56,6 +65,7 @@ void AHASBaseCharacter::BeginPlay()
 	
 	check(HealthComponent);
 	check(HealthTextComponent);
+	check(HealthWidgetComponent);
 	check(GetCharacterMovement());
 	check(GetMesh());
 
@@ -154,6 +164,12 @@ void AHASBaseCharacter::OnDeath()
 void AHASBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+	const auto HealthBarWidget = Cast<UHASHealthBarWidget>(HealthWidgetComponent->GetUserWidgetObject());
+	if (!HealthBarWidget)
+	{
+		return;
+	}
+	HealthBarWidget->SetHealthPercent(HealthComponent->GetHealthPercent());
 }
 
 void AHASBaseCharacter::MeleeAttack()

@@ -6,12 +6,14 @@
 #include "GameFramework/HUD.h"
 #include "HASMenuHUD.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class HACKANDSLASH_API AHASMenuHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> MenuWidgetClass;
+
+	virtual void BeginPlay() override;
 };

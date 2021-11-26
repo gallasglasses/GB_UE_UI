@@ -13,5 +13,7 @@ UCLASS()
 class HACKANDSLASH_API AHASMenuGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+		AHASMenuGameModeBase();
 };

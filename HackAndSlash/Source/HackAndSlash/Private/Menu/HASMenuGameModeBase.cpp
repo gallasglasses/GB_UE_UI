@@ -2,4 +2,11 @@
 
 
 #include "Menu/HASMenuGameModeBase.h"
+#include "Menu/HASMenuPlayerController.h"
+#include "Menu/UI/HASMenuHUD.h"
 
+AHASMenuGameModeBase::AHASMenuGameModeBase()
+{
+	PlayerControllerClass = AHASMenuPlayerController::StaticClass();
+	HUDClass = AHASMenuHUD::StaticClass();
+}

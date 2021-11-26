@@ -3,3 +3,10 @@
 
 #include "Menu/HASMenuPlayerController.h"
 
+void AHASMenuPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetInputMode(FInputModeUIOnly());
+	bShowMouseCursor = true;
+}
