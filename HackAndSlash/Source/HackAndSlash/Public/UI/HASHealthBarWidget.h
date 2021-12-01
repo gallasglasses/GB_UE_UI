@@ -7,17 +7,34 @@
 #include "HASHealthBarWidget.generated.h"
 
 class UProgressBar;
+class UImage;
+class UTextBlock;
+class UWidgetAnimation;
 
 UCLASS()
 class HACKANDSLASH_API UHASHealthBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+		void OnTakeDamage();
+
 	void SetHealthPercent(float Percent);
+
+	void SetScaleDamage(float Damage);
 
 	protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* StatusImage;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ScaleDamage;
+
+// 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetAnim))
+// 		UWidgetAnimation* OnTakeDamageAnim;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	float PercentVisibilityThreshold = 0.8;

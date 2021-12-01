@@ -170,6 +170,7 @@ void AHASBaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 		return;
 	}
 	HealthBarWidget->SetHealthPercent(HealthComponent->GetHealthPercent());
+	HealthBarWidget->SetScaleDamage(HealthDelta);
 }
 
 void AHASBaseCharacter::MeleeAttack()

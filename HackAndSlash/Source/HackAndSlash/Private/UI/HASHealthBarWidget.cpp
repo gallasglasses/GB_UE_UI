@@ -3,6 +3,9 @@
 
 #include "UI/HASHealthBarWidget.h"
 #include "components/ProgressBar.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "Animation/WidgetAnimation.h"
 
 void UHASHealthBarWidget::SetHealthPercent(float Percent)
 {
@@ -19,4 +22,25 @@ void UHASHealthBarWidget::SetHealthPercent(float Percent)
 	HealthProgressBar->SetFillColorAndOpacity(HealthProgressBarColor);
 
 	HealthProgressBar->SetPercent(Percent);
+
+	if (FMath::IsNearlyZero(Percent))
+	{
+		StatusImage->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UHASHealthBarWidget::SetScaleDamage(float Damage)
+{
+	if (Damage < 0.0f)
+	{
+		ScaleDamage->SetVisibility(ESlateVisibility::Visible);
+		ScaleDamage->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), -Damage)));
+		OnTakeDamage();
+		/*PlayAnimation(OnTakeDamageAnim);*/
+		
+	}
+	else
+	{
+		ScaleDamage->SetVisibility(ESlateVisibility::Hidden);
+	}	
 }
