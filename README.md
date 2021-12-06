@@ -31,3 +31,12 @@ for educational purposes such as :
 
 [![Video HW2 part 1](https://img.youtube.com/vi/MycVuXNiSYI/0.jpg)](https://youtu.be/MycVuXNiSYI)
 [![Video HW2 part 2](https://img.youtube.com/vi/geYGP1RkwXU/0.jpg)](https://youtu.be/geYGP1RkwXU)
+
+## Урок 3. UMG. Привязка виджетов в С++ и создание менеджера виджетов
+
+- [X] 1. Написать на C++ логику для созданных после предыдущего урока виджетов: главного меню, статусов танка и врагов.
+- [X] 2. Отображать над танком и врагами полоски хп, показывающие актуальный уровень здоровья.
+- [X] 3. (**)создать HUD менеджер, управляющий отображением главного меню, “Game Over” виджета, статуса своего танка.
+
+[![Video HW3 part 1](https://img.youtube.com/vi/UyD73WaXxMI/0.jpg)](https://youtu.be/UyD73WaXxMI)
+
