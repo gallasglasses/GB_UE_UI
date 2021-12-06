@@ -3,6 +3,7 @@
 
 #include "Menu/UI/HASMenuWidget.h"
 #include "Menu/UI/HASMenuSettingsWidget.h"
+#include "Menu/UI/HASMenuAddContentWidget.h"
 #include "Components/Button.h"
 #include "Components/CanvasPanel.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,6 +23,11 @@ void UHASMenuWidget::NativeOnInitialized()
 		SettingsButton->OnClicked.AddDynamic(this, &UHASMenuWidget::OnSettingsClicked);
 	}
 
+	if (AdditionalContentButton)
+	{
+		AdditionalContentButton->OnClicked.AddDynamic(this, &UHASMenuWidget::OnAddContentClicked);
+	}
+
 	if (QuitButton)
 	{
 		QuitButton->OnClicked.AddDynamic(this, &UHASMenuWidget::OnQuitClicked);
@@ -31,7 +37,15 @@ void UHASMenuWidget::NativeOnInitialized()
 	{
 		if (SettingsWidget->GetBackToMenuButton())
 		{
-			SettingsWidget->GetBackToMenuButton()->OnClicked.AddDynamic(this, &UHASMenuWidget::OnBackToMenuClicked);
+			SettingsWidget->GetBackToMenuButton()->OnClicked.AddDynamic(this, &UHASMenuWidget::OnBackSettingsToMenuClicked);
+		}
+	}
+	
+	if (AddContentWidget)
+	{
+		if (AddContentWidget->GetBackToMenuButton())
+		{
+			AddContentWidget->GetBackToMenuButton()->OnClicked.AddDynamic(this, &UHASMenuWidget::OnBackAddContentToMenuClicked);
 		}
 	}
 }
@@ -48,14 +62,26 @@ void UHASMenuWidget::OnSettingsClicked()
 	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
+void UHASMenuWidget::OnAddContentClicked()
+{
+	CanvasPanel->SetVisibility(ESlateVisibility::Hidden);
+	AddContentWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
 void UHASMenuWidget::OnQuitClicked()
 {
 	QuitWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UHASMenuWidget::OnBackToMenuClicked()
+void UHASMenuWidget::OnBackSettingsToMenuClicked()
 {
 	SettingsWidget->SetFirstActiveWidgetIndex();
 	SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
+	CanvasPanel->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UHASMenuWidget::OnBackAddContentToMenuClicked()
+{
+	AddContentWidget->SetVisibility(ESlateVisibility::Hidden);
 	CanvasPanel->SetVisibility(ESlateVisibility::Visible);
 }

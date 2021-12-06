@@ -7,6 +7,7 @@
 #include "HASMenuWidget.generated.h"
 
 class UHASMenuSettingsWidget;
+class UHASMenuAddContentWidget;
 class UButton;
 class UCanvasPanel;
 
@@ -20,17 +21,23 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		UCanvasPanel* CanvasPanel;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* StartGameButton;
 
 	UPROPERTY(meta = (BindWidget))
 		UButton* SettingsButton;
 
 	UPROPERTY(meta = (BindWidget))
+		UButton* AdditionalContentButton;
+
+	UPROPERTY(meta = (BindWidget))
 		UButton* QuitButton;
 
 	UPROPERTY(meta = (BindWidget))
 		UHASMenuSettingsWidget* SettingsWidget;
+
+	UPROPERTY(meta = (BindWidget))
+		UHASMenuAddContentWidget* AddContentWidget;
 
 	UPROPERTY(meta = (BindWidget))
 		UUserWidget* QuitWidget;
@@ -42,11 +49,17 @@ private:
 		void OnStartGameClicked();
 
 	UFUNCTION()
-		void OnSettingsClicked();
+		void OnSettingsClicked(); 
+		
+	UFUNCTION()
+		void OnAddContentClicked();
 
 	UFUNCTION()
 		void OnQuitClicked();
 
 	UFUNCTION()
-		void OnBackToMenuClicked();
+		void OnBackSettingsToMenuClicked();
+
+	UFUNCTION()
+		void OnBackAddContentToMenuClicked();
 };

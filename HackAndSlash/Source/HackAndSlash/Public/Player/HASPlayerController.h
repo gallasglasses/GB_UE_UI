@@ -6,14 +6,18 @@
 #include "GameFramework/PlayerController.h"
 #include "HASPlayerController.generated.h"
 
-/**
- * 
- */
+class AHASGameHUD;
+
 UCLASS()
 class HACKANDSLASH_API AHASPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-		virtual void BeginPlay() override;
+	AHASPlayerController();
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+	AHASGameHUD* GetGameHUD() const;
 };

@@ -7,6 +7,7 @@
 #include "HASPlayerHUDWidget.generated.h"
 
 class UHASHealthComponent;
+class UHASMiniMapWidget;
 
 UCLASS()
 class HACKANDSLASH_API UHASPlayerHUDWidget : public UUserWidget
@@ -26,6 +27,10 @@ public:
 	void OnTakeDamage();
 
 	virtual bool Initialize() override;
+
+protected:
+
+	virtual void NativePreConstruct() override;
 
 private:
 	UHASHealthComponent* GetHealthComponent() const;

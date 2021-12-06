@@ -13,6 +13,7 @@ class UTextRenderComponent;
 class UAnimMontage;
 class UBoxComponent;
 class UWidgetComponent;
+class AHASGameHUD;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
@@ -82,6 +83,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		AHASGameHUD* GetGameHUD() const;
 
 private:
 	FTimerHandle MeleeAttackTimerHandle;

@@ -2,7 +2,20 @@
 
 
 #include "UI/HASPlayerHUDWidget.h"
+#include "UI/HASMiniMapWidget.h"
 #include "Components/HASHealthComponent.h"
+//#include "Components/CanvasPanelSlot.h"
+
+void UHASPlayerHUDWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+
+	/*if (MiniMapWidget)
+	{
+		Cast<UCanvasPanelSlot>(MiniMapWidget->Slot)->SetAutoSize(true);
+		Cast<UCanvasPanelSlot>(MiniMapWidget->Slot)->SetPosition(FVector2D(-50.f, -50.f));
+	}*/
+}
 
 float UHASPlayerHUDWidget::GetHealthPercent() const
 {

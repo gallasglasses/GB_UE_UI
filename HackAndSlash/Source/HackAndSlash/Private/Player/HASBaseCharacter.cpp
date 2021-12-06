@@ -14,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "UI/HASHealthBarWidget.h"
+#include "UI/HASGameHUD.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -80,6 +81,21 @@ void AHASBaseCharacter::BeginPlay()
 void AHASBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	/*FVector CurrentPlayerPosition;
+	if (!HealthComponent->IsDead() && Controller->GetStateName() != NAME_Spectating)
+	{
+		CurrentPlayerPosition = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+
+		if (AHASGameHUD* GameHUD = GetGameHUD())
+		{
+			UE_LOG(BaseCharacterLog, Display, TEXT("Pos X %f, Y %f "), CurrentPlayerPosition.X, CurrentPlayerPosition.Y);
+
+			FVector2D PlayerPosition(CurrentPlayerPosition.X, CurrentPlayerPosition.Y);
+			GameHUD->SetPlayerHUDPosition(PlayerPosition);
+		}
+	}*/
+	
 }
 
 // Called to bind functionality to input
@@ -120,6 +136,13 @@ float AHASBaseCharacter::GetMovementDirection() const
 	const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
 	const auto Degrees = FMath::RadiansToDegrees(AngleBetween);
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
+}
+
+AHASGameHUD* AHASBaseCharacter::GetGameHUD() const
+{
+	auto PlayerController = GetWorld()->GetFirstPlayerController();
+
+	return Cast<AHASGameHUD>(PlayerController->GetHUD());
 }
 
 void AHASBaseCharacter::MoveForward(float Amount)
