@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Menu/UI/Styles/RadioButtonsWidgetStyle.h"
 #include "RadioButtons.generated.h"
 
 class SHASSlateRadioButton;
@@ -21,6 +22,9 @@ public:
 		FOnRadioButtonsChangedEvent OnRadioButtonChanged;
 
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
+
+	UPROPERTY(EditAnywhere, Category = Appearance, meta = (DisplayName = Style))
+		FRadioButtonsStyle WidgetStyle;
 
 protected:
 

@@ -20,7 +20,8 @@ public class HackAndSlash : ModuleRules
             "HackAndSlash/Public/UI",
             "HackAndSlash/Public/Animations",
 			"HackAndSlash/Public/Menu",
-            "HackAndSlash/Public/Menu/UI"
+            "HackAndSlash/Public/Menu/UI",
+            "HackAndSlash/Public/Menu/UI/Styles"
         });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

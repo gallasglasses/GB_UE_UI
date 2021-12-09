@@ -34,7 +34,6 @@ void FMiniMapCoreStyle::Initialize()
 {
 	Shutdown();
 
-	//StylePtr = FindStyle("/HASGame/UI/");
 	StylePtr = FindStyle();
 	FSlateStyleRegistry::RegisterSlateStyle(*StylePtr);
 }

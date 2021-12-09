@@ -14,7 +14,9 @@ void URadioButtons::ReleaseSlateResources(bool bReleaseChildren)
 TSharedRef<SWidget> URadioButtons::RebuildWidget()
 {
 	RadioButtons = SNew(SHASSlateRadioButton)
-	.OnRadioButtonChanged_UObject(this, &ThisClass::OnRadioButtonsChangedFunc);
+		.OnRadioButtonChanged_UObject(this, &ThisClass::OnRadioButtonsChangedFunc)
+		.Style(&WidgetStyle);
+
 	return RadioButtons.ToSharedRef();
 }
 
