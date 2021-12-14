@@ -38,5 +38,33 @@ for educational purposes such as :
 - [X] 2. Отображать над танком и врагами полоски хп, показывающие актуальный уровень здоровья.
 - [X] 3. (**)создать HUD менеджер, управляющий отображением главного меню, “Game Over” виджета, статуса своего танка.
 
-[![Video HW3 part 1](https://img.youtube.com/vi/UyD73WaXxMI/0.jpg)](https://youtu.be/UyD73WaXxMI)
+[![Video HW3 part](https://img.youtube.com/vi/UyD73WaXxMI/0.jpg)](https://youtu.be/UyD73WaXxMI)
 
+## Урок 4. Slate: Основы инициализация классов и передача аргументов
+
+- [ ] 1. Создать виджет для мини карты, в котором переопределить метод OnPaint и с помощью MakeLines и MakeBox рисовать схематическую карту уровня.
+- *(Не использована функция MakeLines)
+- [X] 2. Добавить изображение позиции игрока на мини-карту.
+- [X] 3. (**)сделать карту динамической, обновляя при передвижении игрока.
+- [ ] 4. (**)снова заглянуть в библиотеку и реализовать любой виджет, для которого UMG было недостаточно: https://www.gameuidatabase.com/index.php
+
+[![Video HW4 part 1](https://img.youtube.com/vi/rnWolczr-ow/0.jpg)](https://youtu.be/rnWolczr-ow)
+[![Video HW4 part 2](https://img.youtube.com/vi/ogJ-yzVk_PA/0.jpg)](https://youtu.be/ogJ-yzVk_PA)
+
+## Урок 5. Slate: Стили
+
+- [X] 1. Создать стили для уже имеющихся в проекте umg виджетов.
+- [X] 2. Создать несколько цветовых тем и применить их.
+- [ ] 3. (**)сделать и применять стиль к мини-карте.
+
+[![Video HW5](https://img.youtube.com/vi/u7loNA-ccAg/0.jpg)](https://youtu.be/u7loNA-ccAg)
+
+## Урок 6. Slate и UMG: Drag&Drop
+
+- [X] 1. Создание нескольких типов объектов для ДрагДропа
+- [X] 2. Во время игры есть возможность вызвать список доступных объектов и ДрагДропом перетащить в мир
+- [X] 3. при наведении на объект в списке появляется попап (виджет) с информацией о нём
+- [X] 4. (**)доработать ДрагДроп так, чтоб перетаскиваемый виджет вставлялся до виджета, над которым находится, если курсор находится над верхней половиной виджета, и после - если над нижней
+
+[![Video HW6 part 1](https://img.youtube.com/vi/w_X9RQixANI/0.jpg)](https://youtu.be/w_X9RQixANI)
+[![Video HW6 part 2](https://img.youtube.com/vi/KXSEFxBYaRc/0.jpg)](https://youtu.be/KXSEFxBYaRc)
