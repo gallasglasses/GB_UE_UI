@@ -103,6 +103,7 @@ private:
 	void OnDeath();
 	void OnHealthChanged(float Health, float HealthDelta);
 	void MeleeAttack();
+	void OpenInventory();
 	void OnStartAttacking();
 	void OnStopAttacking();
 	void InitAnimations();
@@ -114,4 +115,5 @@ private:
 	bool bIsAttacking = false;
 	bool bIsMovingForward = false;
 	bool bIsDamageDone = false;
+	//bool bIsInventoryOpen = false;
 };

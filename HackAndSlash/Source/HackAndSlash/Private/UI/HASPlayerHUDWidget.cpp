@@ -4,6 +4,7 @@
 #include "UI/HASPlayerHUDWidget.h"
 #include "UI/HASMiniMapWidget.h"
 #include "Components/HASHealthComponent.h"
+#include "HASUtils.h"
 //#include "Components/CanvasPanelSlot.h"
 
 void UHASPlayerHUDWidget::NativePreConstruct()
@@ -19,7 +20,7 @@ void UHASPlayerHUDWidget::NativePreConstruct()
 
 float UHASPlayerHUDWidget::GetHealthPercent() const
 {
-	const auto HealthComponent = GetHealthComponent();
+	const auto HealthComponent = HASUtils::GetHASPlayerComponent<UHASHealthComponent>(GetOwningPlayerPawn());
 	if (!HealthComponent)
 	{
 		return 0.0f;
@@ -29,7 +30,7 @@ float UHASPlayerHUDWidget::GetHealthPercent() const
 
 bool UHASPlayerHUDWidget::IsPlayerAlive() const
 {
-	const auto HealthComponent = GetHealthComponent();
+	const auto HealthComponent = HASUtils::GetHASPlayerComponent<UHASHealthComponent>(GetOwningPlayerPawn());
 	return HealthComponent && !HealthComponent->IsDead();
 }
 
@@ -41,28 +42,12 @@ bool UHASPlayerHUDWidget::IsPlayerSpectating() const
 
 bool UHASPlayerHUDWidget::Initialize()
 {
-	const auto HealthComponent = GetHealthComponent();
+	const auto HealthComponent = HASUtils::GetHASPlayerComponent<UHASHealthComponent>(GetOwningPlayerPawn());
 	if (HealthComponent)
 	{
 		HealthComponent->OnHealthChanged.AddUObject(this, &UHASPlayerHUDWidget::OnHealthChanged);
 	}
 	return Super::Initialize();
-}
-
-UHASHealthComponent* UHASPlayerHUDWidget::GetHealthComponent() const
-{
-	const auto Player = GetOwningPlayerPawn();
-	if (!Player)
-	{
-		return nullptr;
-	}
-	const auto Component = Player->GetComponentByClass(UHASHealthComponent::StaticClass());
-	const auto HealthComponent = Cast<UHASHealthComponent>(Component);
-	if (!HealthComponent)
-	{
-		return nullptr;
-	}
-	return HealthComponent;
 }
 
 void UHASPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)

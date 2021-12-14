@@ -16,8 +16,15 @@ class HACKANDSLASH_API AHASPlayerController : public APlayerController
 public:
 	AHASPlayerController();
 
-	virtual void BeginPlay() override;
+	FSimpleMulticastDelegate OnMouseButtonUp;
 
 	virtual void Tick(float DeltaSeconds) override;
+	
 	AHASGameHUD* GetGameHUD() const;
+protected:
+	virtual void BeginPlay() override;
+
+	virtual void SetupInputComponent() override;
+
+	void OnLeftMouseButtonUp();
 };

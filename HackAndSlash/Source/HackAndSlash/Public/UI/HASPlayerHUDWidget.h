@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "HASPlayerHUDWidget.generated.h"
 
-class UHASHealthComponent;
 class UHASMiniMapWidget;
 
 UCLASS()
@@ -33,7 +32,6 @@ protected:
 	virtual void NativePreConstruct() override;
 
 private:
-	UHASHealthComponent* GetHealthComponent() const;
 
 	void OnHealthChanged(float Health, float HealthDelta);
 };

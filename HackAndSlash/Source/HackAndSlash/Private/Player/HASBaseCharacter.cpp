@@ -113,6 +113,7 @@ void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHASBaseCharacter::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHASBaseCharacter::OnStopRunning);
 	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &AHASBaseCharacter::MeleeAttack);
+	PlayerInputComponent->BindAction("OpenInventory", IE_Pressed, this, &AHASBaseCharacter::OpenInventory);
 }
 
 bool AHASBaseCharacter::IsRunning() const
@@ -205,6 +206,26 @@ void AHASBaseCharacter::MeleeAttack()
 	OnStartAttacking();
 	UE_LOG(BaseCharacterLog, Display, TEXT("SLASH!"));
 	GetWorld()->GetTimerManager().SetTimer(MeleeAttackTimerHandle, this, &AHASBaseCharacter::OnStopAttacking, MeleeAttackAnimMontage->CalculateSequenceLength(), false);
+}
+
+void AHASBaseCharacter::OpenInventory()
+{
+	/*AHASGameHUD* HUD = Cast<AHASGameHUD>(GetGameHUD());
+	if (!HUD)
+	{
+		return;
+	}
+	UUserWidget* Inventory = Cast<UUserWidget>(HUD->InventoryTest);
+	if (bIsInventoryOpen)
+	{
+		Inventory->SetVisibility(ESlateVisibility::Hidden);
+		bIsInventoryOpen = false;
+	}
+	else
+	{
+		Inventory->SetVisibility(ESlateVisibility::Visible);
+		bIsInventoryOpen = true;
+	}*/
 }
 
 void AHASBaseCharacter::OnStartAttacking()

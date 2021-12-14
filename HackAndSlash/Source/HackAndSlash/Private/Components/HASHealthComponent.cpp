@@ -22,6 +22,21 @@ float UHASHealthComponent::GetHealth() const
 	return Health;
 }
 
+bool UHASHealthComponent::TryToAddHealth(float HealthAmount)
+{
+	if (IsDead() || IsHealthFull())
+	{
+		return false;
+	}
+	SetHealth(Health + HealthAmount);
+	return true;
+}
+
+bool UHASHealthComponent::IsHealthFull() const
+{
+	return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
 bool UHASHealthComponent::IsDead() const
 {
 	return FMath::IsNearlyZero(Health);
@@ -66,7 +81,7 @@ void UHASHealthComponent::HealUpdate()
 {
 	SetHealth(Health + HealModifier);
 
-	if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+	if (IsHealthFull() && GetWorld())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 	}

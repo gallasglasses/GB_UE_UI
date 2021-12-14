@@ -14,6 +14,23 @@ AHASPlayerController::AHASPlayerController()
 void AHASPlayerController::BeginPlay()
 {
 	SetInputMode(FInputModeGameOnly());
+
+	bEnableClickEvents = true;
+}
+
+void AHASPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (InputComponent)
+	{
+		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Released, this, &ThisClass::OnLeftMouseButtonUp);
+	}
+}
+
+void AHASPlayerController::OnLeftMouseButtonUp()
+{
+	OnMouseButtonUp.Broadcast();
 }
 
 void AHASPlayerController::Tick(float DeltaSeconds)
@@ -28,7 +45,7 @@ void AHASPlayerController::Tick(float DeltaSeconds)
 	if (AHASGameHUD* GameHUD = GetGameHUD())
 	{
 		FVector CurrentPlayerPosition = PlayerPawn->GetActorLocation();
-		UE_LOG(ControllerLog, Display, TEXT("Pos X %f, Y %f "), CurrentPlayerPosition.X, CurrentPlayerPosition.Y);
+		//UE_LOG(ControllerLog, Display, TEXT("Pos X %f, Y %f "), CurrentPlayerPosition.X, CurrentPlayerPosition.Y);
 
 		FVector2D PlayerPosition(CurrentPlayerPosition.X, CurrentPlayerPosition.Y);
 		GameHUD->SetPlayerHUDPosition(PlayerPosition);

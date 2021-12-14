@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Menu/UI/RadioButtons.h"
 #include "Menu/UI/HASMenuAddContentWidget.h"
+#include "Menu/UI/RadioButtons.h"
 #include "Menu/UI/Styles/RadioButtonsWidgetStyle.h"
 #include "Menu/UI/Styles/MenuCoreStyle.h"
 #include "Menu/UI/Styles/MenuDefaultWidgetStyle.h"
