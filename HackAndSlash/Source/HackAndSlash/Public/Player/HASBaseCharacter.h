@@ -14,6 +14,9 @@ class UAnimMontage;
 class UBoxComponent;
 class UWidgetComponent;
 class AHASGameHUD;
+class UHASInventoryComponent;
+class UHASInventoryManagerComponent;
+class UDataTable;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
@@ -44,6 +47,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UWidgetComponent* HealthWidgetComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UHASInventoryComponent* InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UHASInventoryManagerComponent* InventoryManagerComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
 
@@ -52,6 +61,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* HitReactAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "InventoryPack")
+	UDataTable* DefaultInventoryPack;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);

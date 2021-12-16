@@ -1,0 +1,110 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "UI/Inventory/HASInventoryCellWidget.h"
+#include "UI/Inventory/HASInventoryDragDropOperation.h"
+#include "Components/TextBlock.h"
+#include "Components/Image.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+
+bool UHASInventoryCellWidget::AddItem(const FInventorySlotInfo& SlotInfo, const FInventoryItemInfo& ItemInfo)
+{
+	if (bHasItem)
+	{
+		return false;
+	}
+
+	if (ItemImage)
+	{
+		ItemImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ItemImage->SetBrushFromTexture(ItemInfo.Icon.LoadSynchronous());
+	}
+
+	if (ItemCountText)
+	{
+		ItemCountText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		ItemCountText->SetText(FText::FromString(FString::FromInt(SlotInfo.Count)));
+	}
+
+	bHasItem = true;
+	Item = SlotInfo;
+
+	return true;
+}
+
+bool UHASInventoryCellWidget::HasItem() const
+{
+	return bHasItem;
+}
+
+void UHASInventoryCellWidget::Clear()
+{
+	if (!bHasItem)
+	{
+		return;
+	}
+
+	if (ItemImage)
+	{
+		ItemImage->SetVisibility(ESlateVisibility::Collapsed);
+		ItemImage->SetBrush(FSlateBrush());
+	}
+
+	if (ItemCountText)
+	{
+		ItemCountText->SetVisibility(ESlateVisibility::Collapsed);
+		ItemCountText->SetText(FText::FromString("0"));
+	}
+
+	bHasItem = false;
+	Item = FInventorySlotInfo();
+}
+
+const FInventorySlotInfo& UHASInventoryCellWidget::GetItem() const
+{
+	return Item;
+}
+
+FReply UHASInventoryCellWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (bIsDraggable && bHasItem &&	InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+	{
+		return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
+	}
+	return FReply::Handled();
+
+}
+
+void UHASInventoryCellWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
+{
+	OutOperation = UWidgetBlueprintLibrary::CreateDragDropOperation(UHASInventoryDragDropOperation::StaticClass());
+
+	if (OutOperation)
+	{
+		UHASInventoryDragDropOperation* InventoryDragDropOperation = Cast<UHASInventoryDragDropOperation>(OutOperation);
+		if (InventoryDragDropOperation)
+		{
+			InventoryDragDropOperation->SourceCell = this;
+			InventoryDragDropOperation->DefaultDragVisual = this;
+		}
+	}
+	else
+	{
+		Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+	}
+
+}
+
+bool UHASInventoryCellWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+{
+	UHASInventoryDragDropOperation* InventoryDragDropOperation = Cast<UHASInventoryDragDropOperation>(InOperation);
+	if (InventoryDragDropOperation && (InventoryDragDropOperation->DefaultDragVisual != this || InventoryDragDropOperation->SourceCell != this)) //&& InventoryDragDropOperation->SourceCell != this 
+	{
+		if (OnItemDrop.IsBound())
+		{
+			OnItemDrop.Broadcast(InventoryDragDropOperation->SourceCell, this);
+			return true;
+		}
+	}
+	return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+}

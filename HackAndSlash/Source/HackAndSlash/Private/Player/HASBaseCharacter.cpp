@@ -15,6 +15,9 @@
 #include "GameFramework/Controller.h"
 #include "UI/HASHealthBarWidget.h"
 #include "UI/HASGameHUD.h"
+#include "UI/Inventory/HASInventoryComponent.h"
+#include "UI/Inventory/HASInventoryManagerComponent.h"
+#include "UI/Inventory/HASInventoryData.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -57,6 +60,10 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 	AxeTriggerHitComponent->AttachToComponent(GetMesh(), AttachmentRules, "FX_Sweep");
 	AxeTriggerHitComponent->OnComponentBeginOverlap.AddDynamic(this, &AHASBaseCharacter::OnOverlapHit);
 	AxeTriggerHitComponent->IgnoreActorWhenMoving(GetOwner(), true);
+
+	InventoryComponent = CreateDefaultSubobject<UHASInventoryComponent>("InventoryComponent");
+
+	InventoryManagerComponent = CreateDefaultSubobject<UHASInventoryManagerComponent>("InventoryManagerComponent");
 }
 
 // Called when the game starts or when spawned
@@ -67,14 +74,28 @@ void AHASBaseCharacter::BeginPlay()
 	check(HealthComponent);
 	check(HealthTextComponent);
 	check(HealthWidgetComponent);
+	check(InventoryComponent);
+	check(InventoryManagerComponent);
 	check(GetCharacterMovement());
 	check(GetMesh());
+
 
 	OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
 	HealthComponent->OnDeath.AddUObject(this, &AHASBaseCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &AHASBaseCharacter::OnHealthChanged);
 
 	LandedDelegate.AddDynamic(this, &AHASBaseCharacter::OnGroundLanded);
+
+	if (DefaultInventoryPack)
+	{
+		TArray<FInventorySlotInfo*> SlotInfo;
+		DefaultInventoryPack->GetAllRows<FInventorySlotInfo>("", SlotInfo);
+		for (int32 i = 0; i < SlotInfo.Num(); i++)
+		{
+			InventoryComponent->SetItem(i, *SlotInfo[i]);
+		}
+	}
+	InventoryManagerComponent->Init(InventoryComponent);
 }
 
 // Called every frame
@@ -107,8 +128,8 @@ void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AHASBaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AHASBaseCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("LookUp", this, &AHASBaseCharacter::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("TurnAround", this, &AHASBaseCharacter::AddControllerYawInput);
+	//PlayerInputComponent->BindAxis("LookUp", this, &AHASBaseCharacter::AddControllerPitchInput);
+	//PlayerInputComponent->BindAxis("TurnAround", this, &AHASBaseCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHASBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHASBaseCharacter::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHASBaseCharacter::OnStopRunning);
