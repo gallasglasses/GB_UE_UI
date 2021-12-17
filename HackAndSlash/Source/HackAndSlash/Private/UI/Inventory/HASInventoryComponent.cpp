@@ -29,3 +29,26 @@ int32 UHASInventoryComponent::GetItemsNum() const
 {
 	return Items.Num();
 }
+
+void UHASInventoryComponent::ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo)
+{
+	const FInventorySlotInfo* FindItem = GetItem(IndexFrom);
+	if ((*FindItem).ID == ItemFrom.ID && (*FindItem).Count == ItemFrom.Count)
+	{
+		
+		if (ItemTo.ID.IsNone())
+		{
+			ClearItem(IndexFrom);
+			Items.Add(IndexTo, ItemFrom);
+		}
+		else 
+		{
+			FindItem = GetItem(IndexTo);
+			if ((*FindItem).ID == ItemTo.ID && (*FindItem).Count == ItemTo.Count)
+			{
+				SetItem(IndexFrom, ItemTo);
+				SetItem(IndexTo, ItemFrom);
+			}
+		}
+	}
+}

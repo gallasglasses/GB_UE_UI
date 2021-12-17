@@ -50,4 +50,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	bool bIsDraggable = true;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UHASInventoryCellWidget> DragVisualWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	UTexture2D* ItemVisualTexture = nullptr;
+
+	int32 ItemCountVisualText;
+
 };

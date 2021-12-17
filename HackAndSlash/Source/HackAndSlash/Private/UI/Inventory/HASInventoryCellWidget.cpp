@@ -17,13 +17,15 @@ bool UHASInventoryCellWidget::AddItem(const FInventorySlotInfo& SlotInfo, const 
 	if (ItemImage)
 	{
 		ItemImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		ItemImage->SetBrushFromTexture(ItemInfo.Icon.LoadSynchronous());
+		ItemVisualTexture = ItemInfo.Icon.LoadSynchronous();
+		ItemImage->SetBrushFromTexture(ItemVisualTexture);
 	}
 
 	if (ItemCountText)
 	{
 		ItemCountText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		ItemCountText->SetText(FText::FromString(FString::FromInt(SlotInfo.Count)));
+		ItemCountVisualText = SlotInfo.Count;
+		ItemCountText->SetText(FText::FromString(FString::FromInt(ItemCountVisualText)));
 	}
 
 	bHasItem = true;
@@ -48,6 +50,7 @@ void UHASInventoryCellWidget::Clear()
 	{
 		ItemImage->SetVisibility(ESlateVisibility::Collapsed);
 		ItemImage->SetBrush(FSlateBrush());
+		ItemVisualTexture = nullptr;
 	}
 
 	if (ItemCountText)
@@ -77,15 +80,27 @@ FReply UHASInventoryCellWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 
 void UHASInventoryCellWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
+	
 	OutOperation = UWidgetBlueprintLibrary::CreateDragDropOperation(UHASInventoryDragDropOperation::StaticClass());
-
+	
 	if (OutOperation)
 	{
 		UHASInventoryDragDropOperation* InventoryDragDropOperation = Cast<UHASInventoryDragDropOperation>(OutOperation);
+		UHASInventoryCellWidget* DragVisualWidget = CreateWidget<UHASInventoryCellWidget>(GetWorld(), DragVisualWidgetClass);
+
+		if (DragVisualWidget && DragVisualWidget->ItemImage)
+		{
+			DragVisualWidget->ItemImage->SetBrushFromTexture(ItemVisualTexture);
+			DragVisualWidget->ItemImage->SetVisibility(ESlateVisibility::Visible);
+			DragVisualWidget->ItemCountText->SetText(FText::FromString(FString::FromInt(ItemCountVisualText)));
+			DragVisualWidget->ItemCountText->SetVisibility(ESlateVisibility::Visible);
+		}
+
 		if (InventoryDragDropOperation)
 		{
-			InventoryDragDropOperation->SourceCell = this;
-			InventoryDragDropOperation->DefaultDragVisual = this;
+			InventoryDragDropOperation->DragVisualWidget = this;
+			InventoryDragDropOperation->DefaultDragVisual = DragVisualWidget;
+			InventoryDragDropOperation->Pivot = EDragPivot::MouseDown;
 		}
 	}
 	else
@@ -98,11 +113,11 @@ void UHASInventoryCellWidget::NativeOnDragDetected(const FGeometry& InGeometry, 
 bool UHASInventoryCellWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	UHASInventoryDragDropOperation* InventoryDragDropOperation = Cast<UHASInventoryDragDropOperation>(InOperation);
-	if (InventoryDragDropOperation && (InventoryDragDropOperation->DefaultDragVisual != this || InventoryDragDropOperation->SourceCell != this)) //&& InventoryDragDropOperation->SourceCell != this 
+	if (InventoryDragDropOperation && (InventoryDragDropOperation->DefaultDragVisual != this || InventoryDragDropOperation->DragVisualWidget != this))
 	{
 		if (OnItemDrop.IsBound())
 		{
-			OnItemDrop.Broadcast(InventoryDragDropOperation->SourceCell, this);
+			OnItemDrop.Broadcast(InventoryDragDropOperation->DragVisualWidget, this);
 			return true;
 		}
 	}

@@ -52,7 +52,7 @@ void UHASInventoryWidget::Init(int32 ItemsCount)
 	if (CellsPanel)
 	{
 		CellsPanel->ClearChildren();
-		for (int32 i = 0; i < ItemsCount; ++i)
+		for (int32 i = 0; i < ItemsCount; i++)
 		{
 			if (UHASInventoryCellWidget* Cell = CreateCell())
 			{
@@ -71,7 +71,6 @@ bool UHASInventoryWidget::AddItem(const FInventorySlotInfo& SlotInfo, const FInv
 		{
 			return GoldCell->AddItem(SlotInfo, ItemInfo);
 		}
-		return false;
 	}
 
 	if (CellsPanel)
@@ -125,8 +124,6 @@ void UHASInventoryWidget::ClearItems()
 	{
 		CellWidget->Clear();
 	}
-
-	return;
 }
 
 void UHASInventoryWidget::OnItemDropped(UHASInventoryCellWidget* DraggedFrom, UHASInventoryCellWidget* DroppedTo)

@@ -25,8 +25,6 @@ void UHASInventoryManagerComponent::Init(UHASInventoryComponent* InInventoryComp
 
 		InventoryWidget->OnItemDrop.AddUObject(this, &UHASInventoryManagerComponent::OnItemDropped);
 
-		InventoryWidget->OnUpdateCells.AddUObject(this, &UHASInventoryManagerComponent::OnUpdateCells);
-
 		for (const auto& Item : LocalInventoryComponent->GetItems())
 		{
 			FInventoryItemInfo* ItemInfo = GetItemData(Item.Value.ID);
@@ -41,6 +39,7 @@ void UHASInventoryManagerComponent::Init(UHASInventoryComponent* InInventoryComp
 				InventoryWidget->AddItem(Item.Value, *ItemInfo, Item.Key);
 			}
 		}
+		InventoryWidget->OnUpdateCells.AddUObject(this, &UHASInventoryManagerComponent::OnUpdateCells);
 	}
 }
 
@@ -58,11 +57,16 @@ void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* Dragg
 	DraggedFrom->Clear();
 
 	DroppedTo->AddItem(FromItem, *GetItemData(FromItem.ID));
-
 	if (!ToItem.ID.IsNone())
 	{
 		DraggedFrom->AddItem(ToItem, *GetItemData(ToItem.ID));
 	}
+	ChangeKeyItem(FromItem, DraggedFrom->IndexInInventory, ToItem, DroppedTo->IndexInInventory);
+}
+
+void UHASInventoryManagerComponent::ChangeKeyItem(const FInventorySlotInfo& FromItemDropped, const int32 FromIndexDropped, const FInventorySlotInfo& ToItemDropped, const int32 ToIndexDropped)
+{
+	LocalInventoryComponent->ChangeKeyItem(FromItemDropped, FromIndexDropped, ToItemDropped, ToIndexDropped);
 }
 
 void UHASInventoryManagerComponent::OnUpdateCells(EItemType ItemType)
@@ -125,6 +129,4 @@ void UHASInventoryManagerComponent::SwitchInventoryWidgetTabs(EItemType ItemType
 			}
 		}
 	}
-
-	return;
 }

@@ -5,8 +5,6 @@
 #include "UI/Inventory/HASInventoryCellWidget.h"
 #include "HASInventoryDragDropOperation.generated.h"
 
-//class UHASInventoryCellWidget;
-
 UCLASS()
 class HACKANDSLASH_API UHASInventoryDragDropOperation : public UDragDropOperation
 {
@@ -15,5 +13,5 @@ class HACKANDSLASH_API UHASInventoryDragDropOperation : public UDragDropOperatio
 public:
 
 	UPROPERTY()
-		UHASInventoryCellWidget* SourceCell;
+		UHASInventoryCellWidget* DragVisualWidget;
 };
