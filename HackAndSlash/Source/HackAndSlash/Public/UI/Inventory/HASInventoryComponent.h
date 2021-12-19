@@ -17,18 +17,26 @@ class HACKANDSLASH_API UHASInventoryComponent : public UActorComponent
 protected:
 	UPROPERTY(EditAnywhere)
 	TMap<int32, FInventorySlotInfo> Items;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<int32, FInventorySlotInfo> ItemsOfSameType;
 		
 public:
 
 	const FInventorySlotInfo* GetItem(int32 SlotIndex) const;
+	const FInventorySlotInfo* GetItemOfSameType(int32 SlotIndex) const;
 
 	virtual void SetItem(int32 SlotIndex, const FInventorySlotInfo& Item);
 	virtual void ClearItem(int32 SlotIndex);
 
+	void SetItemOfSameType(int32 SlotIndex, const FInventorySlotInfo& Item);
 	void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo);
+	void ClearItemsOfSameType();
 
 	const TMap<int32, FInventorySlotInfo>& GetItems() const;
+	const TMap<int32, FInventorySlotInfo>& GetItemsOfSameType() const;
 
 	int32 GetItemsNum() const;
+	int32 GetItemsOfSameTypeNum() const;
 
 };

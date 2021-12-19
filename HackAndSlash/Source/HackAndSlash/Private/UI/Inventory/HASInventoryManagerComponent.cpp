@@ -78,34 +78,32 @@ void UHASInventoryManagerComponent::SwitchInventoryWidgetTabs(EItemType ItemType
 {
 	if (LocalInventoryComponent && InventoryWidget)
 	{
+		LocalInventoryComponent->ClearItemsOfSameType();		
 		InventoryWidget->ClearItems();
 
+		int32 CountIndexItemType = -1;
 		for (auto& Item : LocalInventoryComponent->GetItems())
 		{
 			FInventoryItemInfo* ItemData = GetItemData(Item.Value.ID);
 			if (ItemData)
 			{
 				bool bIsCurrentTabItem = false;
-				int32 CountIndexItemType = -1;
+				
 				if (Item.Key != -1)
 				{
 					switch (ItemType)
 					{
 					case EItemType::IT_Consumable:
 						bIsCurrentTabItem = (ItemData->Type == EItemType::IT_Consumable);
-						CountIndexItemType++;
 						break;
 					case EItemType::IT_Miscellaneous:
 						bIsCurrentTabItem = (ItemData->Type == EItemType::IT_Miscellaneous);
-						CountIndexItemType++;
 						break;
 					case EItemType::IT_Equipment:
 						bIsCurrentTabItem = (ItemData->Type == EItemType::IT_Equipment);
-						CountIndexItemType++;
 						break;
 					case EItemType::IT_Food:
 						bIsCurrentTabItem = (ItemData->Type == EItemType::IT_Food);
-						CountIndexItemType++;
 						break;
 					case EItemType::IT_All:
 						bIsCurrentTabItem = true;
@@ -118,14 +116,24 @@ void UHASInventoryManagerComponent::SwitchInventoryWidgetTabs(EItemType ItemType
 
 				if (bIsCurrentTabItem && ItemType != EItemType::IT_All)
 				{
-					ItemData->Icon.LoadSynchronous();
-					InventoryWidget->AddItem(Item.Value, *ItemData, CountIndexItemType);
+					CountIndexItemType++;
+
+					LocalInventoryComponent->SetItemOfSameType(CountIndexItemType, *LocalInventoryComponent->GetItem(Item.Key));
 				}
 				if (bIsCurrentTabItem && ItemType == EItemType::IT_All)
 				{
 					ItemData->Icon.LoadSynchronous();
 					InventoryWidget->AddItem(Item.Value, *ItemData, Item.Key);
 				}
+			}
+		}
+		if (ItemType != EItemType::IT_All && LocalInventoryComponent->GetItemsOfSameTypeNum() != 0)
+		{
+			for (auto& ItemOfSameType : LocalInventoryComponent->GetItemsOfSameType())
+			{
+				FInventoryItemInfo* ItemDataOfSameType = GetItemData(ItemOfSameType.Value.ID);
+				ItemDataOfSameType->Icon.LoadSynchronous();
+				InventoryWidget->AddItem(ItemOfSameType.Value, *ItemDataOfSameType, ItemOfSameType.Key);
 			}
 		}
 	}
