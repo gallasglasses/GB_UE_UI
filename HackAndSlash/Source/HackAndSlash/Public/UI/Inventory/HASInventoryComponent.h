@@ -28,13 +28,15 @@ public:
 
 	virtual void SetItem(int32 SlotIndex, const FInventorySlotInfo& Item);
 	virtual void ClearItem(int32 SlotIndex);
+	virtual void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo);
 
 	void SetItemOfSameType(int32 SlotIndex, const FInventorySlotInfo& Item);
-	void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo);
 	void ClearItemsOfSameType();
 
 	const TMap<int32, FInventorySlotInfo>& GetItems() const;
 	const TMap<int32, FInventorySlotInfo>& GetItemsOfSameType() const;
+
+	virtual int32 GetMaxItemAmount(int32 SlotIndex, const FInventoryItemInfo& InItem);
 
 	int32 GetItemsNum() const;
 	int32 GetItemsOfSameTypeNum() const;

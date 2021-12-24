@@ -8,15 +8,6 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-/*UENUM()
-enum class EItemType : uint8
-{
-	IT_Miscellaneous,
-	IT_Currency,
-	IT_Equipment,
-	IT_Consumable
-};*/
-
 void UHASInventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -44,6 +35,11 @@ void UHASInventoryWidget::NativeConstruct()
 	if (ConsumableButton)
 	{
 		ConsumableButton->OnClicked.AddDynamic(this, &UHASInventoryWidget::OnConsumableClicked);
+	}
+
+	for (auto* Cell : CellWidgets)
+	{
+		InitCell(Cell);
 	}
 }
 
@@ -111,11 +107,21 @@ UHASInventoryCellWidget* UHASInventoryWidget::CreateCell()
 		UHASInventoryCellWidget* CellWidget = CreateWidget<UHASInventoryCellWidget>(this, CellWidgetClass);
 		CellWidgets.Add(CellWidget);
 
-		CellWidget->OnItemDrop.AddUObject(this, &UHASInventoryWidget::OnItemDropped);
+		InitCell(CellWidget);
 
 		return CellWidget;
 	}
 	return nullptr;
+}
+
+void UHASInventoryWidget::InitCell(UHASInventoryCellWidget* NewCell)
+{
+	if (NewCell)
+	{
+		NewCell->OnItemDrop.AddUObject(this, &UHASInventoryWidget::OnItemDropped);
+		NewCell->OnItemClick.AddUObject(this, &UHASInventoryWidget::OnItemClicked);
+		NewCell->ParentInventoryWidget = this;
+	}
 }
 
 void UHASInventoryWidget::ClearItems()
@@ -131,6 +137,14 @@ void UHASInventoryWidget::OnItemDropped(UHASInventoryCellWidget* DraggedFrom, UH
 	if (OnItemDrop.IsBound())
 	{
 		OnItemDrop.Broadcast(DraggedFrom, DroppedTo);
+	}
+}
+
+void UHASInventoryWidget::OnItemClicked(UHASInventoryCellWidget* OnItemClickCell)
+{
+	if (OnItemClick.IsBound())
+	{
+		OnItemClick.Broadcast(OnItemClickCell);
 	}
 }
 

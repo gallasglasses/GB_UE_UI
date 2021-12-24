@@ -3,9 +3,16 @@
 
 #include "UI/Inventory/HASInventoryCellWidget.h"
 #include "UI/Inventory/HASInventoryDragDropOperation.h"
+#include "UI/Inventory/HASInventoryComponent.h"
+#include "UI/Inventory/HASInventoryWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+
+UHASInventoryComponent* UHASInventoryCellWidget::GetParentInventoryWidget() const
+{
+	return ParentInventoryWidget ? ParentInventoryWidget->ParentInventory : nullptr;
+}
 
 bool UHASInventoryCellWidget::AddItem(const FInventorySlotInfo& SlotInfo, const FInventoryItemInfo& ItemInfo)
 {
@@ -74,8 +81,13 @@ FReply UHASInventoryCellWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 	{
 		return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
 	}
-	return FReply::Handled();
 
+	if (bIsDraggable && bHasItem && InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	{
+		OnItemClick.Broadcast(this);
+		//return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::RightMouseButton).NativeReply;
+	}
+	return FReply::Handled();
 }
 
 void UHASInventoryCellWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)

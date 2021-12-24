@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UI/Inventory/HASEquipInterface.h"
 #include "GameFramework/Character.h"
 #include "HASBaseCharacter.generated.h"
 
@@ -15,11 +16,13 @@ class UBoxComponent;
 class UWidgetComponent;
 class AHASGameHUD;
 class UHASInventoryComponent;
+class UHASEquipInventoryComponent;
 class UHASInventoryManagerComponent;
 class UDataTable;
+class UStaticMeshComponent;
 
 UCLASS()
-class HACKANDSLASH_API AHASBaseCharacter : public ACharacter
+class HACKANDSLASH_API AHASBaseCharacter : public ACharacter, public IHASEquipInterface
 {
 	GENERATED_BODY()
 
@@ -48,10 +51,22 @@ protected:
 	UWidgetComponent* HealthWidgetComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UHASInventoryComponent* InventoryComponent;
+	UHASInventoryComponent* InventoryComponent; 
+		
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UHASEquipInventoryComponent* EquipComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHASInventoryManagerComponent* InventoryManagerComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "EquipComponents")
+	UStaticMeshComponent* HeadEquipComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WeaponryComponents")
+	UStaticMeshComponent* RightHandWeaponryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WeaponryComponents")
+	UStaticMeshComponent* LeftHandWeaponryComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
@@ -79,6 +94,14 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void EquipItem_Implementation(EEquipSlot Slot, FName ItemId) override;
+
+	virtual void UnequipItem_Implementation(EEquipSlot Slot, FName ItemId) override;
+
+	void OnItemUsed(FName ItemId);
+
+	UStaticMeshComponent* GetEquipComponent(EEquipSlot Slot);
 
 public:	
 	// Called every frame
@@ -128,4 +151,6 @@ private:
 	bool bIsMovingForward = false;
 	bool bIsDamageDone = false;
 	//bool bIsInventoryOpen = false;
+	bool bIsInventoryVisible = false;
+	bool bIsEquipVisible = false;
 };

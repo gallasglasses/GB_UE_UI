@@ -8,6 +8,7 @@
 #include "HASInventoryWidget.generated.h"
 
 class UHASInventoryCellWidget;
+class UHASInventoryComponent;
 class UUniformGridPanel;
 class UButton;
 class UTextBlock;
@@ -24,6 +25,10 @@ public:
 
 	FOnUpdateCells OnUpdateCells;
 	FOnItemDrop OnItemDrop;
+	FOnItemClick OnItemClick;
+
+	UPROPERTY()
+	UHASInventoryComponent* ParentInventory;
 
 	virtual void NativeConstruct() override;
 
@@ -39,34 +44,34 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	UHASInventoryCellWidget* GoldCell;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* AllItemsButton;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UImage* AllItemsImage;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* MiscellaneousButton;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UImage* MiscellaneousImage;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* FoodButton;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UImage* FoodImage;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* EquipmentButton;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UImage* EquipmentImage;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* ConsumableButton;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UImage* ConsumableImage;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -75,12 +80,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UHASInventoryCellWidget> CellWidgetClass;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<UHASInventoryCellWidget*> CellWidgets; 
 
 	UHASInventoryCellWidget* CreateCell();
 
+	void InitCell(UHASInventoryCellWidget* NewCell);
+
 	void OnItemDropped(UHASInventoryCellWidget* DraggedFrom, UHASInventoryCellWidget* DroppedTo);
+	void OnItemClicked(UHASInventoryCellWidget* OnItemClickCell);
 
 	EItemType CurrentTabType = EItemType::IT_All;
 private:

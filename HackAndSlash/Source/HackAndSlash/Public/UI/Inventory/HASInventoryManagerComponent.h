@@ -12,6 +12,8 @@ class UDataTable;
 class UHASInventoryWidget;
 class UHASInventoryCellWidget;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnItemUse, FName /*ItemId*/);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HACKANDSLASH_API UHASInventoryManagerComponent : public UActorComponent
 {
@@ -21,8 +23,17 @@ public:
 
 	UHASInventoryManagerComponent();
 
+	FOnItemUse OnItemUse;
+
 	void Init(UHASInventoryComponent* InInventoryComponent);
+	
+	void InitEquip(UHASInventoryComponent* InInventoryComponent);
+
 	void SwitchInventoryWidgetTabs(EItemType ItemType);
+
+ 	void RemoveInventory();
+ 
+ 	void RemoveEquip();
 
 	FInventoryItemInfo* GetItemData(const FName& InID) const;
 
@@ -41,9 +52,16 @@ protected:
 	UHASInventoryWidget* InventoryWidget;
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<UHASInventoryWidget> EquipWidgetClass;
+
+	UPROPERTY()
+	UHASInventoryWidget* EquipWidget;
+
+	UPROPERTY(EditAnywhere)
 	int32 MinInventorySize = 20;
 
 	void OnItemDropped(UHASInventoryCellWidget* DraggedFrom, UHASInventoryCellWidget* DroppedTo);
 	void OnUpdateCells(EItemType ItemType);
+	void OnItemClicked(UHASInventoryCellWidget* OnItemClickCell);
 	void ChangeKeyItem(const FInventorySlotInfo& FromItemDropped, const int32 FromIndexDropped, const FInventorySlotInfo& ToItemDropped, const int32 ToIndexDropped);
 };

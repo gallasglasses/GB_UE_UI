@@ -11,11 +11,13 @@
 #include "Components/HASHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "UI/HASHealthBarWidget.h"
 #include "UI/HASGameHUD.h"
 #include "UI/Inventory/HASInventoryComponent.h"
+#include "UI/Inventory/HASEquipInventoryComponent.h"
 #include "UI/Inventory/HASInventoryManagerComponent.h"
 #include "UI/Inventory/HASInventoryData.h"
 
@@ -61,7 +63,19 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 	AxeTriggerHitComponent->OnComponentBeginOverlap.AddDynamic(this, &AHASBaseCharacter::OnOverlapHit);
 	AxeTriggerHitComponent->IgnoreActorWhenMoving(GetOwner(), true);
 
+	FAttachmentTransformRules EquipAttachmentRules(EAttachmentRule::KeepRelative, false);
+
+	HeadEquipComponent = CreateDefaultSubobject<UStaticMeshComponent>("HeadEquipComponent");
+	HeadEquipComponent->AttachToComponent(GetMesh(), EquipAttachmentRules, "ES_HeadEquip"); 
+	
+	RightHandWeaponryComponent = CreateDefaultSubobject<UStaticMeshComponent>("RightHandWeaponryComponent");
+	RightHandWeaponryComponent->AttachToComponent(GetMesh(), EquipAttachmentRules, "ES_RightHandWeaponry");
+
+	LeftHandWeaponryComponent = CreateDefaultSubobject<UStaticMeshComponent>("LeftHandWeaponryComponent");
+	LeftHandWeaponryComponent->AttachToComponent(GetMesh(), EquipAttachmentRules, "ES_LeftHandWeaponry");
+
 	InventoryComponent = CreateDefaultSubobject<UHASInventoryComponent>("InventoryComponent");
+	EquipComponent = CreateDefaultSubobject<UHASEquipInventoryComponent>("EquipComponent");
 
 	InventoryManagerComponent = CreateDefaultSubobject<UHASInventoryManagerComponent>("InventoryManagerComponent");
 }
@@ -75,6 +89,7 @@ void AHASBaseCharacter::BeginPlay()
 	check(HealthTextComponent);
 	check(HealthWidgetComponent);
 	check(InventoryComponent);
+	check(EquipComponent);
 	check(InventoryManagerComponent);
 	check(GetCharacterMovement());
 	check(GetMesh());
@@ -95,7 +110,101 @@ void AHASBaseCharacter::BeginPlay()
 			InventoryComponent->SetItem(i, *SlotInfo[i]);
 		}
 	}
-	InventoryManagerComponent->Init(InventoryComponent);
+// 	InventoryManagerComponent->Init(InventoryComponent);
+// 	InventoryManagerComponent->InitEquip(EquipComponent);
+
+	InventoryManagerComponent->OnItemUse.AddUObject(this, &AHASBaseCharacter::OnItemUsed);
+}
+
+void AHASBaseCharacter::EquipItem_Implementation(EEquipSlot Slot, FName ItemId)
+{
+	UStaticMeshComponent* EquipMeshItem = GetEquipComponent(Slot);
+	if (EquipMeshItem)
+	{
+		FInventoryItemInfo* ItemInfoPtr = InventoryManagerComponent->GetItemData(ItemId);
+		if (ItemInfoPtr)
+		{
+			EquipMeshItem->SetStaticMesh(ItemInfoPtr->Mesh.LoadSynchronous());
+
+			WeaponDamageAmount += ItemInfoPtr->Damage;
+			UE_LOG(BaseCharacterLog, Display, TEXT("Damage: %f"), WeaponDamageAmount);
+
+			/*ArmorStat += ItemInfoPtr->Armor;
+			IntelligenceStat += ItemInfoPtr->Intelligence;*/
+		}
+	}
+
+}
+
+void AHASBaseCharacter::UnequipItem_Implementation(EEquipSlot Slot, FName ItemId)
+{
+	UStaticMeshComponent* EquipMeshItem = GetEquipComponent(Slot);
+	if (EquipMeshItem)
+	{
+		EquipMeshItem->SetStaticMesh(nullptr);
+		FInventoryItemInfo* ItemInfoPtr = InventoryManagerComponent->GetItemData(ItemId);
+		if (ItemInfoPtr)
+		{
+			WeaponDamageAmount -= ItemInfoPtr->Damage;
+			UE_LOG(BaseCharacterLog, Display, TEXT("Damage: %f"), WeaponDamageAmount);
+
+			/*ArmorStat -= ItemInfoPtr->Armor;
+			IntelligenceStat -= ItemInfoPtr->Intelligence;*/
+		}
+	}
+
+}
+
+void AHASBaseCharacter::OnItemUsed(FName ItemId)
+{
+	FInventoryItemInfo* ItemInfoPtr = InventoryManagerComponent->GetItemData(ItemId);
+	if (ItemInfoPtr)
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("Heal: %d"), ItemInfoPtr->Heal);
+		HealthComponent->TryToAddHealth(ItemInfoPtr->Heal);
+	}
+}
+
+UStaticMeshComponent* AHASBaseCharacter::GetEquipComponent(EEquipSlot Slot)
+{
+	FName EquipTag = "";
+
+	switch (Slot)
+	{
+		case EEquipSlot::ES_None:
+			break;
+		case EEquipSlot::ES_RightHandWeaponry:
+			EquipTag = "ES_RightHandWeaponry";
+			break;
+		case EEquipSlot::ES_LeftHandWeaponry:
+			EquipTag = "ES_LeftHandWeaponry";
+			break;
+		case EEquipSlot::ES_AddRightHandWeaponry:
+			EquipTag = "ES_AddRightHandWeaponry";
+			break;
+		case EEquipSlot::ES_AddLeftHandWeaponry:
+			EquipTag = "ES_AddLeftHandWeaponry";
+			break;
+		case EEquipSlot::ES_HeadEquip:
+			EquipTag = "ES_HeadEquip";
+			break;
+		case EEquipSlot::ES_ArmsEquip:
+			EquipTag = "ES_ArmsEquip";
+			break;
+		case EEquipSlot::ES_BodyEquip:
+			EquipTag = "ES_BodyEquip";
+			break;
+		case EEquipSlot::ES_LegsEquip:
+			EquipTag = "ES_LegsEquip";
+			break;
+		case EEquipSlot::ES_FeetEquip:
+			EquipTag = "ES_FeetEquip";
+			break;
+		default:
+			break;
+	}
+	TArray<UActorComponent*> Components = GetComponentsByTag(UStaticMeshComponent::StaticClass(), EquipTag);
+	return Components.Num() > 0 ? Cast<UStaticMeshComponent>(Components[0]) : nullptr;
 }
 
 // Called every frame
@@ -128,8 +237,8 @@ void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AHASBaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AHASBaseCharacter::MoveRight);
-	//PlayerInputComponent->BindAxis("LookUp", this, &AHASBaseCharacter::AddControllerPitchInput);
-	//PlayerInputComponent->BindAxis("TurnAround", this, &AHASBaseCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AHASBaseCharacter::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("TurnAround", this, &AHASBaseCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AHASBaseCharacter::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AHASBaseCharacter::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &AHASBaseCharacter::OnStopRunning);
@@ -247,6 +356,21 @@ void AHASBaseCharacter::OpenInventory()
 		Inventory->SetVisibility(ESlateVisibility::Visible);
 		bIsInventoryOpen = true;
 	}*/
+
+	if (bIsInventoryVisible && bIsEquipVisible)
+	{
+		InventoryManagerComponent->RemoveInventory();
+		InventoryManagerComponent->RemoveEquip();
+		bIsInventoryVisible = false;
+		bIsEquipVisible = false;
+	}
+	else
+	{
+		InventoryManagerComponent->Init(InventoryComponent);
+		InventoryManagerComponent->InitEquip(EquipComponent);
+		bIsInventoryVisible = true;
+		bIsEquipVisible = true;
+	}
 }
 
 void AHASBaseCharacter::OnStartAttacking()

@@ -35,6 +35,16 @@ const TMap<int32, FInventorySlotInfo>& UHASInventoryComponent::GetItemsOfSameTyp
 	return ItemsOfSameType;
 }
 
+int32 UHASInventoryComponent::GetMaxItemAmount(int32 SlotIndex, const FInventoryItemInfo& InItem)
+{
+	FInventorySlotInfo* SlotPtr = Items.Find(SlotIndex);
+	if (SlotPtr && SlotPtr->ID != InItem.ID)
+	{
+		return 0;
+	}
+	return -1;
+}
+
 int32 UHASInventoryComponent::GetItemsNum() const
 {
 	return Items.Num();
@@ -75,7 +85,7 @@ void UHASInventoryComponent::ChangeKeyItem(const FInventorySlotInfo& ItemFrom, c
 
 void UHASInventoryComponent::ClearItemsOfSameType()
 {
-	for (int32 i = 0; i <= ItemsOfSameType.Num(); i++)
+	for (int32 i = 0; ItemsOfSameType.Num() != 0; i++)
 	{
 		ItemsOfSameType.Remove(i);
 	}

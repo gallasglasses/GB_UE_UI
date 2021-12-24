@@ -9,6 +9,8 @@
 
 class UImage;
 class UTextBlock;
+class UHASInventoryWidget;
+class UHASInventoryComponent;
 
 UCLASS()
 class HACKANDSLASH_API UHASInventoryCellWidget : public UUserWidget
@@ -26,11 +28,17 @@ protected:
 	bool bHasItem;
 
 	UPROPERTY()
-	FInventorySlotInfo Item;
+	FInventorySlotInfo Item; 
 
 public:
 
 	FOnItemDrop OnItemDrop;
+	FOnItemClick OnItemClick;
+
+	UPROPERTY()
+	UHASInventoryWidget* ParentInventoryWidget;
+	
+	UHASInventoryComponent* GetParentInventoryWidget() const;
 
 	bool AddItem(const FInventorySlotInfo& SlotInfo, const FInventoryItemInfo& ItemInfo);
 	bool HasItem() const;
@@ -39,6 +47,7 @@ public:
 
 	const FInventorySlotInfo& GetItem() const;
 
+	UPROPERTY(EditAnywhere)
 	int32 IndexInInventory = INDEX_NONE;
 
 protected:

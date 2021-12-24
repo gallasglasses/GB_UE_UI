@@ -27,9 +27,27 @@ enum class EItemRarity : uint8
 	IR_Legendary
 };
 
+UENUM()
+enum class EEquipSlot : uint8
+{
+	ES_None,
+	ES_RightHandWeaponry,
+	ES_LeftHandWeaponry,
+	ES_AddRightHandWeaponry,
+	ES_AddLeftHandWeaponry,
+	ES_HeadEquip,
+	ES_ArmsEquip,
+	ES_BodyEquip,
+	ES_LegsEquip,
+	ES_FeetEquip
+};
+
 class UHASInventoryCellWidget;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnItemDrop, UHASInventoryCellWidget* /*DraggedFrom*/, UHASInventoryCellWidget* /*DroppedTo*/);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnItemClick, UHASInventoryCellWidget* /*OnItemClickCell*/);
+
 
 USTRUCT(BlueprintType)
 struct FInventoryItemInfo : public FTableRowBase
@@ -57,6 +75,9 @@ struct FInventoryItemInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, Category = "Type")
 		EItemRarity Rarity;
 
+	UPROPERTY(EditAnywhere, Category = "Type")
+		EEquipSlot Equip;
+
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		int32 Damage;
 
@@ -65,6 +86,9 @@ struct FInventoryItemInfo : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		int32 Intelligence;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		int32 Heal;
 };
 
 USTRUCT(BlueprintType)

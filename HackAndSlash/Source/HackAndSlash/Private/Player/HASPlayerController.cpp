@@ -25,10 +25,16 @@ void AHASPlayerController::SetupInputComponent()
 	if (InputComponent)
 	{
 		InputComponent->BindKey(EKeys::LeftMouseButton, IE_Released, this, &ThisClass::OnLeftMouseButtonUp);
+		InputComponent->BindKey(EKeys::RightMouseButton, IE_Released, this, &ThisClass::OnRightMouseButtonUp);
 	}
 }
 
 void AHASPlayerController::OnLeftMouseButtonUp()
+{
+	OnMouseButtonUp.Broadcast();
+}
+
+void AHASPlayerController::OnRightMouseButtonUp()
 {
 	OnMouseButtonUp.Broadcast();
 }

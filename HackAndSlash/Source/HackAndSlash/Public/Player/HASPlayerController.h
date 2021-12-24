@@ -27,4 +27,5 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	void OnLeftMouseButtonUp();
+	void OnRightMouseButtonUp();
 };
