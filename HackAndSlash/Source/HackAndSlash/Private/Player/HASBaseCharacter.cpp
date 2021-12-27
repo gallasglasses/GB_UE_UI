@@ -16,10 +16,10 @@
 #include "GameFramework/Controller.h"
 #include "UI/HASHealthBarWidget.h"
 #include "UI/HASGameHUD.h"
-#include "UI/Inventory/HASInventoryComponent.h"
-#include "UI/Inventory/HASEquipInventoryComponent.h"
-#include "UI/Inventory/HASInventoryManagerComponent.h"
-#include "UI/Inventory/HASInventoryData.h"
+#include "HASInventoryComponent.h"
+#include "HASEquipInventoryComponent.h"
+#include "HASInventoryManagerComponent.h"
+#include "HASInventoryData.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
