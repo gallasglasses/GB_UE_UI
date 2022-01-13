@@ -21,9 +21,12 @@ AHASLootBox::AHASLootBox()
 	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	SetRootComponent(CollisionComponent);
 
-	LootBoxComponent = CreateDefaultSubobject<UStaticMeshComponent>("LootBoxComponent");
-	LootBoxComponent->SetupAttachment(RootComponent);
+	CloseLootBoxComponent = CreateDefaultSubobject<UStaticMeshComponent>("CloseLootBoxComponent");
+	CloseLootBoxComponent->SetupAttachment(RootComponent);
 
+	OpenLootBoxComponent = CreateDefaultSubobject<UStaticMeshComponent>("OpenLootBoxComponent");
+	OpenLootBoxComponent->SetupAttachment(RootComponent);
+	OpenLootBoxComponent->SetHiddenInGame(true);
 
 	InventoryComponent = CreateDefaultSubobject<UHASInventoryComponent>("InventoryComponent");
 	InventoryManagerComponent = CreateDefaultSubobject<UHASInventoryManagerComponent>("InventoryManagerComponent");
@@ -49,17 +52,17 @@ void AHASLootBox::BeginPlay()
 	}
 }
 
-void AHASLootBox::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-	Super::NotifyActorBeginOverlap(OtherActor);
-
-	UE_LOG(LogLootBox, Display, TEXT("LootBox is here"));
-	const auto Pawn = Cast<APawn>(OtherActor);
-	if (GivePickupTo(Pawn))
-	{
-		UE_LOG(LogLootBox, Display, TEXT("LootBox is open"));
-	}
-}
+//void AHASLootBox::NotifyActorBeginOverlap(AActor* OtherActor)
+//{
+//	Super::NotifyActorBeginOverlap(OtherActor);
+//
+//	UE_LOG(LogLootBox, Display, TEXT("LootBox is here"));
+//	const auto Pawn = Cast<APawn>(OtherActor);
+//	if (GivePickupTo(Pawn))
+//	{
+//		UE_LOG(LogLootBox, Display, TEXT("LootBox is open"));
+//	}
+//}
 
 void AHASLootBox::NotifyActorEndOverlap(AActor* OtherActor)
 {
@@ -81,7 +84,15 @@ void AHASLootBox::NotifyActorEndOverlap(AActor* OtherActor)
 		}
 		PlayerInventoryManagerComponent->RemoveInventory();
 	}
-	InventoryManagerComponent->RemoveInventory();
+	if (InventoryManagerComponent && InventoryComponent)
+	{ 
+		InventoryManagerComponent->RemoveInventory();
+	}
+
+	CloseLootBoxComponent->SetHiddenInGame(false);//
+	OpenLootBoxComponent->SetHiddenInGame(true);//
+	bIsOpen = false;//
+
 	PickupWasTaken();
 	UE_LOG(LogLootBox, Display, TEXT("LootBox is not here"));
 }
@@ -91,8 +102,9 @@ void AHASLootBox::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-bool AHASLootBox::GivePickupTo(APawn* PlayerPawn)
+bool AHASLootBox::GivePickupTo(/*APawn* PlayerPawn*/)
 {
+	const auto PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();//
 	const auto PlayerInventoryManagerComponent = HASUtils::GetHASPlayerComponent<UHASInventoryManagerComponent>(PlayerPawn);
 	if (!PlayerInventoryManagerComponent)
 	{
@@ -103,6 +115,9 @@ bool AHASLootBox::GivePickupTo(APawn* PlayerPawn)
 	{
 		return false;
 	}
+	CloseLootBoxComponent->SetHiddenInGame(true);
+	OpenLootBoxComponent->SetHiddenInGame(false);
+	bIsOpen = true;
 	PlayerInventoryManagerComponent->Init(PlayerInventoryComponent);
 	if (!InventoryManagerComponent && !InventoryComponent)
 	{
@@ -119,4 +134,30 @@ void AHASLootBox::PickupWasTaken()
 		Destroy();
 		UE_LOG(LogLootBox, Display, TEXT("LootBox taken"));
 	}
+}
+
+void AHASLootBox::EndPickupTo()
+{
+	const auto Pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	const auto PlayerInventoryManagerComponent = HASUtils::GetHASPlayerComponent<UHASInventoryManagerComponent>(Pawn);
+	if (!PlayerInventoryManagerComponent)
+	{
+		return;
+	}
+	else
+	{
+		const auto PlayerInventoryComponent = HASUtils::GetHASPlayerComponent<UHASInventoryComponent>(Pawn);
+		if (!PlayerInventoryComponent)
+		{
+			return;
+		}
+		PlayerInventoryManagerComponent->RemoveInventory();
+	}
+	InventoryManagerComponent->RemoveInventory();
+	CloseLootBoxComponent->SetHiddenInGame(false);
+	OpenLootBoxComponent->SetHiddenInGame(true);
+	bIsOpen = false;
+	PickupWasTaken();
+	UE_LOG(LogLootBox, Display, TEXT("LootBox is not here"));
 }

@@ -25,7 +25,10 @@ protected:
 	USphereComponent* CollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WeaponryComponents")
-	UStaticMeshComponent* LootBoxComponent;
+	UStaticMeshComponent* CloseLootBoxComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+		UStaticMeshComponent* OpenLootBoxComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHASInventoryComponent* InventoryComponent;
@@ -37,13 +40,22 @@ protected:
 	UDataTable* DefaultLootPack;
 
 	virtual void BeginPlay() override;
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	//virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
 
-private:
-	virtual bool GivePickupTo(APawn* PlayerPawn);
+//private:
+	UFUNCTION(BlueprintCallable)
+	virtual bool GivePickupTo(/*APawn* PlayerPawn*/);
+
+	UFUNCTION(BlueprintCallable)
 	void PickupWasTaken();
+
+	UFUNCTION(BlueprintCallable)
+	void EndPickupTo();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LootBox")
+	bool bIsOpen = false;
 };
