@@ -15,6 +15,7 @@ enum class EObjectiveType :uint8
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnObjectiveCompleted, UObjective*)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnObjectiveInProgress, UObjective*, float /*ProgressPercent*/)
 
 UCLASS(Abstract)
 class QUESTSYSTEM_API UObjective : public UObject
@@ -31,6 +32,7 @@ public:
 		EObjectiveType Type;
 
 	FOnObjectiveCompleted OnObjectiveCompleted;
+	FOnObjectiveInProgress OnObjectiveInProgress;
 
 	UPROPERTY(VisibleAnywhere)
 		bool bIsCompleted;
@@ -67,4 +69,24 @@ public:
 	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "LocationMarker"))
 		AActor* Marker;
 
+};
+
+UCLASS()
+class QUESTSYSTEM_API UCollectionObjective : public UObjective
+{
+	GENERATED_BODY()
+
+public:
+	UCollectionObjective();
+
+	virtual void ActivateObjective(AActor* Instigator) override;
+
+	UPROPERTY(EditAnywhere/*, meta = (AllowedClasses = "CollectableObject")*/)
+		FName TargetTag;
+
+	UPROPERTY(EditAnywhere)
+		int32 TargetCount = 0;
+
+	UPROPERTY(EditAnywhere)
+		int32 CollectedCount = 0;
 };

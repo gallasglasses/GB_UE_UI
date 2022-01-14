@@ -21,6 +21,7 @@
 #include "HASInventoryManagerComponent.h"
 #include "HASInventoryData.h"
 #include "InteractionComponent.h"
+#include "CollectionComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -82,6 +83,9 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 
 	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>("InteractionComponent");
 	InteractionComponent->SetupAttachment(GetRootComponent());
+
+	CollectionComponent = CreateDefaultSubobject<UCollectionComponent>("CollectionComponent");
+	CollectionComponent->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

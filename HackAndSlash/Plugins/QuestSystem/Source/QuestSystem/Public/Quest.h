@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Quest.generated.h"
 
+class UObjective;
+
 UCLASS()
 class QUESTSYSTEM_API AQuest : public AActor
 {
@@ -59,6 +61,9 @@ public:
 
 	UFUNCTION(CallInEditor, Category = "NewObjectives")
 		void AddLocationObjective();
+
+	UFUNCTION(CallInEditor, Category = "NewObjectives")
+		void AddCollectionObjective();
 
 #endif
 };

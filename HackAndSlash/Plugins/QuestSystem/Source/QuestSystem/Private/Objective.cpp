@@ -3,8 +3,8 @@
 
 #include "Objective.h"
 #include "InteractableObject.h"
+#include "CollectableObject.h"
 #include "LocationMarker.h"
-#include "ToolBuilderUtil.h"
 #include "Kismet/GameplayStatics.h"
 
 UInteractionObjective::UInteractionObjective()
@@ -19,14 +19,13 @@ void UInteractionObjective::ActivateObjective(AActor* Instigator)
 	if (auto* InteractTarget = Cast<IInteractableObject>(Target))
 	{
 		InteractTarget->OnInteractionFinished.AddLambda([this, Instigator](AActor* Object, AActor* InteractInstigator)
-			{
+		{
 				if (bCanBeCompleted && Instigator == InteractInstigator)
 				{
 					bIsCompleted = true;
 					OnObjectiveCompleted.Broadcast(this);
 				}
-			}
-		);
+		});
 	}
 }
 
@@ -50,5 +49,48 @@ void ULocationObjective::ActivateObjective(AActor* Instigator)
 				}
 			}
 		);
+	}
+}
+
+UCollectionObjective::UCollectionObjective()
+{
+	Type = EObjectiveType::Ot_Collect;
+}
+
+void UCollectionObjective::ActivateObjective(AActor* Instigator)
+{
+	Super::ActivateObjective(Instigator);
+
+// 	FHitResult InteractHit;
+// 	auto IntendedTarget = InteractHit.GetActor();
+// 	auto InteractTarget = Cast<ICollectableObject>(IntendedTarget);
+
+	TArray<AActor*> IntendedTarget;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetTag, IntendedTarget);
+
+	for (int32 i = 0; i < IntendedTarget.Num(); i++)
+	{
+		if (ICollectableObject* InteractTarget = Cast<ICollectableObject>(IntendedTarget[i]))
+		{
+			InteractTarget->OnCollectionFinished.AddLambda([this, Instigator](AActor* Object, AActor* InteractInstigator)
+			{
+				if (bCanBeCompleted && Instigator == InteractInstigator)
+				{
+					if (++CollectedCount >= TargetCount)
+					{
+						bIsCompleted = true;
+						OnObjectiveCompleted.Broadcast(this);
+						UE_LOG(LogTemp, Display, TEXT("CollectedCount %d, ProgressPercent 100%%"), CollectedCount);
+						CollectedCount = 0;
+					}
+					else
+					{
+						int32 ProgressPercent = CollectedCount * 100 / TargetCount;
+						OnObjectiveInProgress.Broadcast(this, ProgressPercent);
+						UE_LOG(LogTemp, Display, TEXT("CollectedCount %d, ProgressPercent %d%%"), CollectedCount, ProgressPercent);
+					}
+				}
+			});
+		}
 	}
 }

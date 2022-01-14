@@ -21,6 +21,7 @@ class UHASInventoryManagerComponent;
 class UDataTable;
 class UStaticMeshComponent;
 class UInteractionComponent;
+class UCollectionComponent;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter, public IHASEquipInterface
@@ -71,6 +72,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UInteractionComponent* InteractionComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UCollectionComponent* CollectionComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;

@@ -50,10 +50,12 @@ void AQuest::TakeQuest(AActor* Character)
 		{
 			continue;
 		}
-
-		Objective->ActivateObjective(Character);
-		Objective->bCanBeCompleted = i == 0 || !bKeepObjectivesOrder;
-		Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
+		if (!Objective->bIsCompleted)
+		{
+			Objective->ActivateObjective(Character);
+			Objective->bCanBeCompleted = i == 0 || !bKeepObjectivesOrder;
+			Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
+		}
 	}
 	bIsTaken = true;
 }
@@ -79,5 +81,10 @@ void AQuest::AddInteractObjective()
 void AQuest::AddLocationObjective()
 {
 	Objectives.Add(NewObject<ULocationObjective>(this));
+}
+
+void AQuest::AddCollectionObjective()
+{
+	Objectives.Add(NewObject<UCollectionObjective>(this));
 }
 
