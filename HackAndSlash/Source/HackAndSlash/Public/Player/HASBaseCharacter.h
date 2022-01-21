@@ -22,6 +22,8 @@ class UDataTable;
 class UStaticMeshComponent;
 class UInteractionComponent;
 class UCollectionComponent;
+class UQuestListComponent;
+class UQuestList;
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter, public IHASEquipInterface
@@ -76,6 +78,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	UCollectionComponent* CollectionComponent;
 
+	UPROPERTY(EditDefaultsOnly)
+	UQuestListComponent* QuestListComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathAnimMontage;
 
@@ -110,6 +115,15 @@ protected:
 	void OnItemUsed(FName ItemId);
 
 	UStaticMeshComponent* GetEquipComponent(EEquipSlot Slot);
+
+	UFUNCTION(BlueprintCallable)
+		void ToggleQuestListVisibility();
+
+	UPROPERTY()
+		UQuestList* QuestList;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<UQuestList> QuestListClass;
 
 public:	
 	// Called every frame
