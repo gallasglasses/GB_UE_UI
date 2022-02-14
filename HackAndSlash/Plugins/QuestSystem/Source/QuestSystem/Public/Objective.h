@@ -25,6 +25,10 @@ class QUESTSYSTEM_API UObjective : public UObject
 public:
 	virtual void ActivateObjective(AActor* Instigator) {};
 
+	virtual FBox GetBoundingBox() const { return FBox(); }
+
+	FName WorldTargetName = NAME_None;
+
 	UPROPERTY(EditAnywhere)
 		FText Description;
 
@@ -51,6 +55,8 @@ public:
 
 	virtual void ActivateObjective(AActor* Instigator) override;
 
+	virtual FBox GetBoundingBox() const override { return Target->GetComponentsBoundingBox(true); }
+
 	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "InteractableObject"))
 		AActor* Target;
 
@@ -65,6 +71,8 @@ public:
 	ULocationObjective();
 
 	virtual void ActivateObjective(AActor* Instigator) override;
+
+	virtual FBox GetBoundingBox() const override { return Marker->GetComponentsBoundingBox(true); }
 
 	UPROPERTY(EditAnywhere, meta = (AllowedClasses = "LocationMarker"))
 		AActor* Marker;
@@ -81,12 +89,17 @@ public:
 
 	virtual void ActivateObjective(AActor* Instigator) override;
 
+	//virtual FBox GetBoundingBox() const override { return CollectObject->GetComponentsBoundingBox(true); }
+
+	/*UPROPERTY(EditAnywhere, meta = (AllowedClasses = "CollectableObject"))
+		AActor* CollectObject;*/
+
 	UPROPERTY(EditAnywhere/*, meta = (AllowedClasses = "CollectableObject")*/)
 		FName TargetTag;
 
 	UPROPERTY(EditAnywhere)
 		int32 TargetCount = 0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere)
 		int32 CollectedCount = 0;
 };
