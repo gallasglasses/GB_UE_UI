@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "HASEquipInterface.h"
 #include "GameFramework/Character.h"
+#include "SaveSystem/SaveData.h"
 #include "HASBaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -24,6 +25,8 @@ class UInteractionComponent;
 class UCollectionComponent;
 class UQuestListComponent;
 class UQuestList;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLoadingGame, float /*HealthFromData*/);
 
 UCLASS()
 class HACKANDSLASH_API AHASBaseCharacter : public ACharacter, public IHASEquipInterface
@@ -105,6 +108,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "WeaponDamage")
 	float WeaponDamageAmount = 10.0f;
 
+	FCharacterSaveData SaveData;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -143,6 +148,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		AHASGameHUD* GetGameHUD() const;
+
+	UFUNCTION(BlueprintCallable, Category = "SaveSystem")
+		FCharacterSaveData GetCharacterData();
+
+	UFUNCTION(BlueprintCallable, Category = "SaveSystem")
+		void SetCharacterData(FCharacterSaveData SaveData);
+
+	FOnLoadingGame OnLoadingGame;
 
 private:
 	FTimerHandle MeleeAttackTimerHandle;

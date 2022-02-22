@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/HASHealthComponent.h"
+#include "Player/HASBaseCharacter.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -54,6 +55,10 @@ void UHASHealthComponent::BeginPlay()
 	if (ComponentOwner)
 	{
 		ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UHASHealthComponent::OnTakeAnyDamage);
+		if (AHASBaseCharacter* Character = Cast<AHASBaseCharacter>(ComponentOwner))
+		{
+			Character->OnLoadingGame.AddUObject(this, &UHASHealthComponent::OnLoadingGame);
+		}
 	}
 }
 
@@ -64,6 +69,26 @@ void UHASHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 		return;
 	}
 	SetHealth(Health - Damage);
+
+	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+
+	if (IsDead())
+	{
+		OnDeath.Broadcast();
+	}
+	else if (AutoHeal)
+	{
+		GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UHASHealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
+	}
+}
+
+void UHASHealthComponent::OnLoadingGame(float HealthFromData)
+{
+	if (HealthFromData <= 0.0f || IsDead() || !GetWorld())
+	{
+		return;
+	}
+	SetHealth(HealthFromData);
 
 	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 

@@ -17,11 +17,11 @@ void AHASGameHUD::BeginPlay()
 		CreateWidgetByClass(*MenuWidgetClass);
 	}
 
-	MiniMapHUDWidget = CreateWidget<UHASMiniMapWidget>(GetWorld(), MiniMapWidget);
+	/*MiniMapHUDWidget = CreateWidget<UHASMiniMapWidget>(GetWorld(), MiniMapWidget);
 	if (MiniMapHUDWidget)
 	{
 		MiniMapHUDWidget->AddToViewport();
-	}
+	}*/
 }
 
 UUserWidget* AHASGameHUD::CreateWidgetByClass(const TSubclassOf<UUserWidget> MenuWidgetClass, const int32 ZOrder)

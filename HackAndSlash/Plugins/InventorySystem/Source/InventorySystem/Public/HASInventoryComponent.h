@@ -31,6 +31,7 @@ public:
 	virtual void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo);
 
 	void SetItemOfSameType(int32 SlotIndex, const FInventorySlotInfo& Item);
+	void ClearItems();
 	void ClearItemsOfSameType();
 
 	const TMap<int32, FInventorySlotInfo>& GetItems() const;

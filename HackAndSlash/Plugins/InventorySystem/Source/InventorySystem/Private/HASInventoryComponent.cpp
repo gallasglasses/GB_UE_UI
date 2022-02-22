@@ -25,6 +25,14 @@ void UHASInventoryComponent::ClearItem(int32 SlotIndex)
 	Items.Remove(SlotIndex);
 }
 
+void UHASInventoryComponent::ClearItems()
+{
+	for (int32 i = 0; Items.Num() != 0; i++)
+	{
+		Items.Remove(i);
+	}
+}
+
 const TMap<int32, FInventorySlotInfo>& UHASInventoryComponent::GetItems() const
 {
 	return Items;
