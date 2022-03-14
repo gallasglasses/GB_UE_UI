@@ -94,3 +94,46 @@ for educational purposes such as :
 # II. UE4 Plugins/Modules
  The prototype of the game created at the last course (UI) has been expanded, a quest system has been added, as well as saving and loading data. An add-on for the editor has been written, which will facilitate the work with the quest system.
 
+## Lesson 1. What are plugins and modules
+
+- [X] 1. Transfer part of the code responsible for the gameplay from your project to the plugin.
+- [X] 2. Transfer some assets from your project to the plugin.
+- [X] 3. (**)move inventory to the plugin.
+
+## Lesson 2. Media Player
+
+- [X] 1. Make a widget with the “Browse” button, when clicked, a file dialog opens with the ability to select an image or video.
+- [X] 2. In the same widget, add an image that will display the selected content.
+- [X] 3. (**)after downloading the content, resize the image to maintain the correct aspect ratio.
+
+## Lesson 3. Quest System: Part 1
+- [X] 1. Start your own quest system, make it a separate plugin.
+- [X] 2. Add new interactive items.
+- [X] 3. (**) Make goals of a different type: collecting items, killing enemies, etc.
+
+## Lesson 4. Quest System: Part 2
+- [X] 1. Finish your quest system.
+- [X] 2. Add several quests with different types of goals and the order of their completion, test the quest system.
+- [X] 3. (**) make a hint that the NPC has a quest for the player: a jumping exclamation mark above his head or any other.
+
+## Lesson 5. Simple Editor Tool: Part 1
+- [X] 1. Create plugin with Editor Standalone Window template.
+- [X] 2. In the created tab, make a button, when clicked, quests are selected among the selected actors, and in the tab itself, information about these quests is displayed in an easy-to-read format.
+- [X] 3. Transfer all functionality from the new plugin to the plugin with the quest system.
+- [X] 4. (**)information about quests can not only be viewed, but also changed in the tab.
+
+## Lesson 6. Simple Editor Tool: Part 2
+- [X] 1. Write a tool that highlights all NPCs with quests if there are no NPCs among the selected actors.
+- [X] 2. If there are NPCs among the selected actors, then instead highlight the areas and objects associated with the quests of these NPCs.
+- [X] 3. Transfer all functionality from the new plugin to the plugin with the quest system.
+- [X] 4. (**) in the toolkit you can change the highlight color.
+
+## Lesson 7. Data saving: unreal system
+- [X] 1. Save the state of your player (health level, number of rounds).
+- [X] 2. Save the state of other objects on the map.
+- [X] 3. (**) save inventory.
+
+## Lesson 8. Saving data: working with files
+- [X] 1. Extend the save manager as described in the case study.
+- [X] 2. Save the progress of the quest system.
+- [X] 3. (**) Save everything via FMemoryWriter/FMemoryReader and Serialize function
