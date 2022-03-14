@@ -68,3 +68,25 @@ for educational purposes such as :
 
 [![Video HW6 part 1](https://img.youtube.com/vi/w_X9RQixANI/0.jpg)](https://youtu.be/w_X9RQixANI)
 [![Video HW6 part 2](https://img.youtube.com/vi/KXSEFxBYaRc/0.jpg)](https://youtu.be/KXSEFxBYaRc)
+
+## Урок 7. Инвентарь: Базовая система
+
+- [X] 1. Создать собственный прототип инвентаря.
+- [X] 2. Задать дефолтные предметы в инвентаре через дата тейбл вместо добавления в инвентори компонент вручную. Создать несколько разных начальных сетов в зависимости от выбранного игроком рпг класса или любого другого параметра.
+- [X] 3. (**)инициализировать дата тейбл со списком всех предметов из файла.
+- [X] 4. (**)разбить предметы на категории, каждая из которых отображается в отдельной вкладке инвентаря, есть вкладка со всеми предметами
+
+[![Video HW7 part 1](https://img.youtube.com/vi/Ci1_UoE_fAI/0.jpg)](https://youtu.be/Ci1_UoE_fAI)
+[![Video HW7 part 2](https://img.youtube.com/vi/gFu9d1ub3iI/0.jpg)](https://youtu.be/gFu9d1ub3iI)
+[![Video HW7 part 3](https://img.youtube.com/vi/LaP8WKALCjc/0.jpg)](https://youtu.be/LaP8WKALCjc)
+
+## Урок 8. Инвентарь: Экипировка
+
+- [X] 1. Закончить собственный прототип инвентаря.
+- [X] 2. Примерять на персонажа несколько айтемов одновременно, по одному из каждой категории.
+- [X] 3. (**) сделать сундуки с лутом, возможность забирать из них все айтемы или часть.
+- [X] 4. (**)сделать consumable предметы, восстанавливающие хп (единоразово или с течением времени) или дающие временные бафы. ПКМ по предмету в инвентаре - его использование.
+
+[![Video HW8 part 1](https://img.youtube.com/vi/4GoL7rfryl4/0.jpg)](https://youtu.be/4GoL7rfryl4)
+[![Video HW8 part 2](https://img.youtube.com/vi/uyCvVTsoLHk/0.jpg)](https://youtu.be/uyCvVTsoLHk)
+[![Video HW8 part 3](https://img.youtube.com/vi/V9F3Nv-nmtU/0.jpg)](https://youtu.be/V9F3Nv-nmtU)
