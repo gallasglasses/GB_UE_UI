@@ -13,79 +13,79 @@ for educational purposes such as :
 
 ![Alt-текст](https://cdn1.epicgames.com/ue/product/Screenshot/IBIceLandsScreenshot02-1920x1080-70b0965fef3dd34e9554d94b07cd0748-1920x1080-c3ce4b241da459f4d0d01c800e83d8dc.png?resize=1&w=1920 "Infinity Blade: Ice Lands")
 
-## Урок 1. UMG: Знакомство
+## Lesson 1. UMG: Introduction
 
-- [X] 1. Собрать виджет с центрированной надписью “Game Over” на красном фоне.
-- [X] 2. Вывести виджет на экран, когда игрок умирает (или происходит другое игровое событие, НЕ нажатие на кнопку).
-- [X] 3. (**)Cделать виджет красивым: заменить однотонный фон картинкой, использовать Rich Text Block вместо обычного текста.
+- [X] 1. Collect the widget with a centered inscription "Game Over" on a red background.
+- [X] 2. Display a widget on the screen when the player dies (or another game event occurs, NOT pressing the button).
+- [X] 3. (**)Make the widget beautiful: replace the plain background with a picture, use a Rich Text Block instead of plain text.
 
 [![Video HW1 part 1](https://img.youtube.com/vi/nYGZpavuhPo/0.jpg)](https://youtu.be/nYGZpavuhPo)
 [![Video HW1 part 2](https://img.youtube.com/vi/GuoBnh1abMk/0.jpg)](https://youtu.be/GuoBnh1abMk)
 
-## Урок 2. UMG базовые виджеты и их особенности
+## Lesson 2. UMG basic widgets and their features
 
-- [X] 1. Собрать виджет для главного меню
-- [X] 2. Собрать виджеты статусов танка и врагов, виджет для отображения здоровья над танком
-- [X] 3. (**)добавить анимации в виджеты
-- [X] 4. (**)посмотреть различные примеры UI в библиотеке и повторить понравившиеся: https://www.gameuidatabase.com/index.php
+- [X] 1. Collect the widget for the main menu
+- [X] 2. Collect tank and enemy status widgets, widget to display health over the tank
+- [X] 3. (**)add animations to widgets
+- [X] 4. (**)look at various UI examples in the library and repeat the ones you like: https://www.gameuidatabase.com/index.php
 
 [![Video HW2 part 1](https://img.youtube.com/vi/MycVuXNiSYI/0.jpg)](https://youtu.be/MycVuXNiSYI)
 [![Video HW2 part 2](https://img.youtube.com/vi/geYGP1RkwXU/0.jpg)](https://youtu.be/geYGP1RkwXU)
 
-## Урок 3. UMG. Привязка виджетов в С++ и создание менеджера виджетов
+## Lesson 3. UMG. Binding Widgets in C++ and Creating a Widget Manager
 
-- [X] 1. Написать на C++ логику для созданных после предыдущего урока виджетов: главного меню, статусов танка и врагов.
-- [X] 2. Отображать над танком и врагами полоски хп, показывающие актуальный уровень здоровья.
-- [X] 3. (**)создать HUD менеджер, управляющий отображением главного меню, “Game Over” виджета, статуса своего танка.
+- [X] 1. Write in C++ logic for widgets created after the previous lesson: main menu, tank and enemy statuses.
+- [X] 2. Display HP bars above the tank and enemies, showing the current level of health.
+- [X] 3. (**)create a HUD manager that controls the display of the main menu, “Game Over” widget, the status of your tank.
 
 [![Video HW3 part](https://img.youtube.com/vi/UyD73WaXxMI/0.jpg)](https://youtu.be/UyD73WaXxMI)
 
-## Урок 4. Slate: Основы инициализация классов и передача аргументов
+## Lesson 4. Slate: Basic class initialization and argument passing
 
-- [ ] 1. Создать виджет для мини карты, в котором переопределить метод OnPaint и с помощью MakeLines и MakeBox рисовать схематическую карту уровня.
-*(Не использована функция MakeLines)
-- [X] 2. Добавить изображение позиции игрока на мини-карту.
-- [X] 3. (**)сделать карту динамической, обновляя при передвижении игрока.
-- [ ] 4. (**)снова заглянуть в библиотеку и реализовать любой виджет, для которого UMG было недостаточно: https://www.gameuidatabase.com/index.php
+- [ ] 1. Create a widget for the minimap, in which to override the OnPaint method and use MakeLines and MakeBox to draw a schematic map of the level.
+*(MakeLines not used)
+- [X] 2. Add an image of the player's position to the mini-map.
+- [X] 3. (**)make the map dynamic, updating as the player moves.
+- [ ] 4. (**)look into the library again and implement any widget for which UMG was not enough: https://www.gameuidatabase.com/index.php
 
 [![Video HW4 part 1](https://img.youtube.com/vi/rnWolczr-ow/0.jpg)](https://youtu.be/rnWolczr-ow)
 [![Video HW4 part 2](https://img.youtube.com/vi/ogJ-yzVk_PA/0.jpg)](https://youtu.be/ogJ-yzVk_PA)
 
-## Урок 5. Slate: Стили
+## Lesson 5. Slate: Styles
 
-- [X] 1. Создать стили для уже имеющихся в проекте umg виджетов.
-- [X] 2. Создать несколько цветовых тем и применить их.
-- [ ] 3. (**)сделать и применять стиль к мини-карте.
+- [X] 1. Create styles for the widgets already in the umg project.
+- [X] 2. Create multiple color themes and apply them.
+- [ ] 3. (**) make and apply a style to the minimap.
 
 [![Video HW5](https://img.youtube.com/vi/u7loNA-ccAg/0.jpg)](https://youtu.be/u7loNA-ccAg)
 
-## Урок 6. Slate и UMG: Drag&Drop
+## Lesson 6. Slate and UMG: Drag&Drop
 
-- [X] 1. Создание нескольких типов объектов для ДрагДропа
-- [X] 2. Во время игры есть возможность вызвать список доступных объектов и ДрагДропом перетащить в мир
-- [X] 3. при наведении на объект в списке появляется попап (виджет) с информацией о нём
-- [X] 4. (**)доработать ДрагДроп так, чтоб перетаскиваемый виджет вставлялся до виджета, над которым находится, если курсор находится над верхней половиной виджета, и после - если над нижней
+- [X] 1. Creation of several types of objects for DragDrop
+- [X] 2. During the game, it is possible to call a list of available objects and DragDrop to drag into the world
+- [X] 3. when you hover over an object in the list, a popup (widget) appears with information about it
+- [X] 4. (**) modify DragDrop so that the dragged widget is inserted before the widget it is above, if the cursor is above the top half of the widget, and after - if above the bottom
 
 [![Video HW6 part 1](https://img.youtube.com/vi/w_X9RQixANI/0.jpg)](https://youtu.be/w_X9RQixANI)
 [![Video HW6 part 2](https://img.youtube.com/vi/KXSEFxBYaRc/0.jpg)](https://youtu.be/KXSEFxBYaRc)
 
-## Урок 7. Инвентарь: Базовая система
+## Lesson 7. Inventory: Basic System
 
-- [X] 1. Создать собственный прототип инвентаря.
-- [X] 2. Задать дефолтные предметы в инвентаре через дата тейбл вместо добавления в инвентори компонент вручную. Создать несколько разных начальных сетов в зависимости от выбранного игроком рпг класса или любого другого параметра.
-- [X] 3. (**)инициализировать дата тейбл со списком всех предметов из файла.
-- [X] 4. (**)разбить предметы на категории, каждая из которых отображается в отдельной вкладке инвентаря, есть вкладка со всеми предметами
+- [X] 1. Create your own inventory prototype.
+- [X] 2. Set default items in inventory via date table instead of manually adding components to inventory. Create several different initial sets depending on the class chosen by the RPG player or any other parameter.
+- [X] 3. (**)initialize a date table with a list of all items from the file.
+- [X] 4. (**) split items into categories, each of which is displayed in a separate inventory tab, there is a tab with all items
 
 [![Video HW7 part 1](https://img.youtube.com/vi/Ci1_UoE_fAI/0.jpg)](https://youtu.be/Ci1_UoE_fAI)
 [![Video HW7 part 2](https://img.youtube.com/vi/gFu9d1ub3iI/0.jpg)](https://youtu.be/gFu9d1ub3iI)
 [![Video HW7 part 3](https://img.youtube.com/vi/LaP8WKALCjc/0.jpg)](https://youtu.be/LaP8WKALCjc)
 
-## Урок 8. Инвентарь: Экипировка
+## Lesson 8. Inventory: Equipment
 
-- [X] 1. Закончить собственный прототип инвентаря.
-- [X] 2. Примерять на персонажа несколько айтемов одновременно, по одному из каждой категории.
-- [X] 3. (**) сделать сундуки с лутом, возможность забирать из них все айтемы или часть.
-- [X] 4. (**)сделать consumable предметы, восстанавливающие хп (единоразово или с течением времени) или дающие временные бафы. ПКМ по предмету в инвентаре - его использование.
+- [X] 1. Finish your own inventory prototype.
+- [X] 2. Try on several items on the character at the same time, one from each category.
+- [X] 3. (**) make chests with loot, the ability to take all items or part of them.
+- [X] 4. (**)make consumable items that restore hp (once or over time) or give temporary buffs. RMB on an item in inventory - its use.
 
 [![Video HW8 part 1](https://img.youtube.com/vi/4GoL7rfryl4/0.jpg)](https://youtu.be/4GoL7rfryl4)
 [![Video HW8 part 2](https://img.youtube.com/vi/uyCvVTsoLHk/0.jpg)](https://youtu.be/uyCvVTsoLHk)
