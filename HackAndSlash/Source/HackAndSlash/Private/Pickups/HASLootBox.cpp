@@ -4,9 +4,9 @@
 #include "Pickups/HASLootBox.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "UI/Inventory/HASInventoryComponent.h"
-#include "UI/Inventory/HASInventoryManagerComponent.h"
-#include "UI/Inventory/HASInventoryData.h"
+#include "HASInventoryComponent.h"
+#include "HASInventoryManagerComponent.h"
+#include "HASInventoryData.h"
 #include "HASUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLootBox, All, All);

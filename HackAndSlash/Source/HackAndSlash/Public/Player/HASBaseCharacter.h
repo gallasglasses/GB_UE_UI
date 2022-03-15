@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI/Inventory/HASEquipInterface.h"
+#include "HASEquipInterface.h"
 #include "GameFramework/Character.h"
 #include "HASBaseCharacter.generated.h"
 
