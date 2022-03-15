@@ -38,7 +38,8 @@ void UHASEquipInventoryComponent::SetItem(int32 SlotIndex, const FInventorySlotI
 	}
 
 	const FInventorySlotInfo* EquippedItemInfo = GetItem(SlotIndex);
-	EEquipSlot Equip = EquipSlots.Contains(SlotIndex) ? EquipSlots.FindChecked(SlotIndex) : EEquipSlot::ES_None;
+	//EEquipSlot Equip = EquipSlots.Contains(SlotIndex) ? EquipSlots.FindChecked(SlotIndex) : EEquipSlot::ES_None;
+	EEquipSlot Equip = EquipSlots.FindChecked(SlotIndex);
 
 	if (EquippedItemInfo)
 	{

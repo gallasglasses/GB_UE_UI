@@ -132,6 +132,8 @@ void AHASBaseCharacter::BeginPlay()
 
 void AHASBaseCharacter::EquipItem_Implementation(EEquipSlot Slot, FName ItemId)
 {
+	IHASEquipInterface::EquipItem_Implementation(Slot, ItemId);
+	
 	UStaticMeshComponent* EquipMeshItem = GetEquipComponent(Slot);
 	if (EquipMeshItem)
 	{
@@ -152,6 +154,8 @@ void AHASBaseCharacter::EquipItem_Implementation(EEquipSlot Slot, FName ItemId)
 
 void AHASBaseCharacter::UnequipItem_Implementation(EEquipSlot Slot, FName ItemId)
 {
+	IHASEquipInterface::UnequipItem_Implementation(Slot, ItemId);
+
 	UStaticMeshComponent* EquipMeshItem = GetEquipComponent(Slot);
 	if (EquipMeshItem)
 	{
@@ -312,6 +316,40 @@ AHASGameHUD* AHASBaseCharacter::GetGameHUD() const
 	auto PlayerController = GetWorld()->GetFirstPlayerController();
 
 	return Cast<AHASGameHUD>(PlayerController->GetHUD());
+}
+
+FCharacterSaveData AHASBaseCharacter::GetCharacterData()
+{
+	SaveData.ActorName = GetFName();
+	SaveData.Transform = GetActorTransform();
+	SaveData.Health = HealthComponent->GetHealth();
+	SaveData.InventoryItems = InventoryComponent->GetItems();
+	SaveData.EquipItems = EquipComponent->GetItems();
+	return SaveData;
+}
+
+void AHASBaseCharacter::SetCharacterData(FCharacterSaveData SavedData)
+{
+	if (SavedData.ActorName == GetFName())
+	{
+		SetActorRelativeTransform(SavedData.Transform);
+		auto PlayerController = GetWorld()->GetFirstPlayerController();
+		PlayerController->SetInitialLocationAndRotation(SavedData.Transform.GetLocation(), SavedData.Transform.GetRotation().Rotator());
+		
+		OnLoadingGame.Broadcast(SavedData.Health);
+
+		InventoryComponent->ClearItems();
+		for (auto InventoryItem : SavedData.InventoryItems)
+		{
+			InventoryComponent->SetItem(InventoryItem.Key, InventoryItem.Value);
+		}
+
+		EquipComponent->ClearItems();
+		for (auto EquipItem : SavedData.EquipItems)
+		{
+			EquipComponent->SetItem(EquipItem.Key, EquipItem.Value);
+		}
+	}
 }
 
 void AHASBaseCharacter::MoveForward(float Amount)

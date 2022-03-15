@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "SaveSystem/SaveData.h"
 #include "HASLootBox.generated.h"
 
 class USphereComponent;
@@ -39,6 +40,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "LootPack")
 	UDataTable* DefaultLootPack;
 
+	FLootSaveData SaveData;
+
 	virtual void BeginPlay() override;
 	//virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
@@ -49,6 +52,12 @@ public:
 //private:
 	UFUNCTION(BlueprintCallable)
 	virtual bool GivePickupTo(/*APawn* PlayerPawn*/);
+
+	UFUNCTION(BlueprintCallable, Category = "SaveSystem")
+		FLootSaveData GetLootData();
+
+	UFUNCTION(BlueprintCallable, Category = "SaveSystem")
+		void SetLootData(FLootSaveData SavedData);
 
 	UFUNCTION(BlueprintCallable)
 	void PickupWasTaken();

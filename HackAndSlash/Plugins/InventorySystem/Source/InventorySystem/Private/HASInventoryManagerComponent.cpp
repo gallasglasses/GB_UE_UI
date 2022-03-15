@@ -119,34 +119,47 @@ void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* Dragg
 	const FInventoryItemInfo* NewFromItemInfo = NewFromItem.Count > 0 ? GetItemData(NewFromItem.ID) : nullptr;
 	const FInventoryItemInfo* NewToItemInfo = GetItemData(NewToItem.ID);
 
-	if (Cast<UHASEquipInventoryComponent>(DraggedFrom->GetParentInventoryWidget()) && Cast<UHASEquipInventoryComponent>(DroppedTo->GetParentInventoryWidget()))
+	if (Cast<UHASEquipInventoryComponent>(DraggedFrom->GetParentInventoryWidget()) && NewFromItemInfo/*Cast<UHASEquipInventoryComponent>(DroppedTo->GetParentInventoryWidget())*/)
 	{
-		return;
-	}
+		if (NewToItemInfo->Type == EItemType::IT_Equipment && NewToItemInfo->Equip == NewFromItemInfo->Equip)
+		{
+			DraggedFrom->Clear();
+			DraggedFrom->AddItem(NewFromItem, *NewFromItemInfo);
 
-	DroppedTo->Clear();
-	DraggedFrom->Clear();
+			DroppedTo->Clear();
+			DroppedTo->AddItem(NewToItem, *NewToItemInfo);
 
-	if (NewFromItemInfo)
-	{
-		DraggedFrom->AddItem(NewFromItem, *NewFromItemInfo);
-	}
-	DroppedTo->AddItem(NewToItem, *NewToItemInfo);
-
-	if (FromInventory == ToInventory)
-	{
-		FromInventory->ChangeKeyItem(FromItem, DraggedFrom->IndexInInventory, ToItem, DroppedTo->IndexInInventory);
-	}
-	if (NewFromItem.Count > 0)
-	{
-		FromInventory->SetItem(DraggedFrom->IndexInInventory, NewFromItem);
+			FromInventory->SetItem(DraggedFrom->IndexInInventory, NewFromItem);
+			ToInventory->SetItem(DroppedTo->IndexInInventory, NewToItem);
+		}
 	}
 	else
 	{
-		FromInventory->ClearItem(DraggedFrom->IndexInInventory);
+		DroppedTo->Clear();
+		DraggedFrom->Clear();
+
+		if (NewFromItemInfo)
+		{
+			DraggedFrom->AddItem(NewFromItem, *NewFromItemInfo);
+		}
+		DroppedTo->AddItem(NewToItem, *NewToItemInfo);
+
+		if (FromInventory == ToInventory)
+		{
+			FromInventory->ChangeKeyItem(FromItem, DraggedFrom->IndexInInventory, ToItem, DroppedTo->IndexInInventory);
+		}
+		if (NewFromItem.Count > 0)
+		{
+			FromInventory->SetItem(DraggedFrom->IndexInInventory, NewFromItem);
+		}
+		else
+		{
+			FromInventory->ClearItem(DraggedFrom->IndexInInventory);
+		}
+		ToInventory->SetItem(DroppedTo->IndexInInventory, NewToItem);
 	}
-	ToInventory->SetItem(DroppedTo->IndexInInventory, NewToItem);
 }
+	
 
 void UHASInventoryManagerComponent::ChangeKeyItem(const FInventorySlotInfo& FromItemDropped, const int32 FromIndexDropped, const FInventorySlotInfo& ToItemDropped, const int32 ToIndexDropped)
 {

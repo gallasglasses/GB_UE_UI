@@ -8,6 +8,7 @@
 #include "HASInventoryManagerComponent.h"
 #include "HASInventoryData.h"
 #include "HASUtils.h"
+#include "SaveSystem/SaveSystemSubsystem.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLootBox, All, All);
 
@@ -50,6 +51,9 @@ void AHASLootBox::BeginPlay()
 			InventoryComponent->SetItem(i, *SlotInfo[i]);
 		}
 	}
+
+	auto Subsystem = GetWorld()->GetSubsystem<USaveSystemSubsystem>();
+	Subsystem->SetLoot(GetFName(), this);
 }
 
 //void AHASLootBox::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -125,6 +129,25 @@ bool AHASLootBox::GivePickupTo(/*APawn* PlayerPawn*/)
 	}
 	InventoryManagerComponent->Init(InventoryComponent);
 	return true;
+}
+
+FLootSaveData AHASLootBox::GetLootData()
+{
+	SaveData.ActorName = GetFName();
+	SaveData.InventoryItems = InventoryComponent->GetItems();
+	return SaveData;
+}
+
+void AHASLootBox::SetLootData(FLootSaveData SavedData)
+{
+	if (SavedData.ActorName == GetFName())
+	{
+		InventoryComponent->ClearItems();
+		for (auto InventoryItem : SavedData.InventoryItems)
+		{
+			InventoryComponent->SetItem(InventoryItem.Key, InventoryItem.Value);
+		}
+	}
 }
 
 void AHASLootBox::PickupWasTaken()
