@@ -141,7 +141,7 @@ private:
 	void OpenInventory();
 	void OnStartAttacking();
 	void OnStopAttacking();
-	void InitAnimations();
+	//void InitAnimations();
 	
 	//void OnDealDamage();
 	void MakeDamage(const FHitResult& HitResult);
@@ -150,7 +150,6 @@ private:
 	bool bIsAttacking = false;
 	bool bIsMovingForward = false;
 	bool bIsDamageDone = false;
-	//bool bIsInventoryOpen = false;
 	bool bIsInventoryVisible = false;
 	bool bIsEquipVisible = false;
 };

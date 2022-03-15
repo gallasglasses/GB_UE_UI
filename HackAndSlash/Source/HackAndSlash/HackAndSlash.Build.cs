@@ -8,9 +8,25 @@ public class HackAndSlash : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "SlateCore", "Slate", "InventorySystem" });
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"SlateCore", 
+			"Slate", 
+			"InventorySystem",
+			"MediaPlayerSystem",
+			"MediaAssets",
+            "DesktopPlatform" 
+		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "InventorySystem" });
+		PrivateDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"InventorySystem",
+			"MediaPlayerSystem"
+		});
 
 		PrivateIncludePaths.AddRange(new string[] 
 		{ 

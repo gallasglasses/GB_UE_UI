@@ -17,7 +17,8 @@ enum class EWidgetID : uint8
 	WID_PlayerUI,
 	WID_GameOver,
 	WID_MiniMap,
-	WID_Inventory
+	WID_Inventory,
+	WID_Media
 };
 
 UCLASS()
