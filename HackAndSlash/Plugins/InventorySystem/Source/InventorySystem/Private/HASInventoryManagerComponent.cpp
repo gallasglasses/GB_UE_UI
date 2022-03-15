@@ -55,13 +55,18 @@ FInventoryItemInfo* UHASInventoryManagerComponent::GetItemData(const FName& InID
 
 void UHASInventoryManagerComponent::RemoveInventory()
 {
-	InventoryWidget->RemoveFromParent();
+	if (InventoryWidget && InventoryWidget->IsInViewport())
+	{
+		InventoryWidget->RemoveFromParent();
+	}
 }
 
 void UHASInventoryManagerComponent::RemoveEquip()
 {
-
-	EquipWidget->RemoveFromParent();
+	if (EquipWidget && EquipWidget->IsInViewport())
+	{
+		EquipWidget->RemoveFromParent();
+	}
 }
 
 void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* DraggedFrom, UHASInventoryCellWidget* DroppedTo)

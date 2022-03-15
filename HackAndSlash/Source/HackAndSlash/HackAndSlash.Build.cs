@@ -19,14 +19,16 @@ public class HackAndSlash : ModuleRules
 			"InventorySystem",
 			"MediaPlayerSystem",
 			"MediaAssets",
-            "DesktopPlatform" 
-		});
+            "DesktopPlatform",
+			"QuestSystem"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] 
 		{ 
 			"InventorySystem",
-			"MediaPlayerSystem"
-		});
+			"MediaPlayerSystem",
+            "QuestSystem"
+        });
 
 		PrivateIncludePaths.AddRange(new string[] 
 		{ 
