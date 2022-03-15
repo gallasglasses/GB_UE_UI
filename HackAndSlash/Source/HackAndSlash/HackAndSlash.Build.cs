@@ -20,7 +20,9 @@ public class HackAndSlash : ModuleRules
 			"MediaPlayerSystem",
 			"MediaAssets",
             "DesktopPlatform",
-			"QuestSystem"
+			"QuestSystem",
+            "JsonUtilities",
+            "Json",
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] 
