@@ -8,6 +8,9 @@
 
 class UObjective;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnQuestAction, AQuest*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnStatusChanged, AQuest*);
+
 UCLASS()
 class QUESTSYSTEM_API AQuest : public AActor
 {
@@ -52,7 +55,15 @@ public:
 	UFUNCTION()
 		void TakeQuest(AActor* Character);
 
+	UFUNCTION(BlueprintPure)
+		const TArray<UObjective*>& GetObjectives() const;
+
 	void OnObjectiveCompleted(UObjective* Objective);
+
+	bool IsCompleted() const;
+
+	FOnQuestAction OnQuestStatusChanged;
+	FOnStatusChanged OnStatusChanged;
 
 #if WITH_EDITOR
 

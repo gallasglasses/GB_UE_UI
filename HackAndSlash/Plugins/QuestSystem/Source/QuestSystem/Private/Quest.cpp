@@ -14,11 +14,11 @@ void AQuest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor* ParentActor = GetAttachParentActor();
-	if (ParentActor)
-	{
-		TakeQuest(ParentActor);
-	}
+// 	AActor* ParentActor = GetAttachParentActor();
+// 	if (ParentActor)
+// 	{
+// 		TakeQuest(ParentActor);
+// 	}
 }
 
 void AQuest::Tick(float DeltaTime)
@@ -50,14 +50,18 @@ void AQuest::TakeQuest(AActor* Character)
 		{
 			continue;
 		}
-		if (!Objective->bIsCompleted)
-		{
-			Objective->ActivateObjective(Character);
-			Objective->bCanBeCompleted = i == 0 || !bKeepObjectivesOrder;
-			Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
-		}
+
+		Objective->ActivateObjective(Character);
+		Objective->bCanBeCompleted = i == 0 || !bKeepObjectivesOrder;
+		Objective->OnObjectiveCompleted.AddUObject(this, &ThisClass::OnObjectiveCompleted);
 	}
 	bIsTaken = true;
+	OnStatusChanged.Broadcast(this);
+}
+
+const TArray<UObjective*>& AQuest::GetObjectives() const
+{
+	return Objectives;
 }
 
 void AQuest::OnObjectiveCompleted(UObjective* Objective)
@@ -70,7 +74,26 @@ void AQuest::OnObjectiveCompleted(UObjective* Objective)
 			Objectives[Index + 1]->bCanBeCompleted = true;
 		}
 	}
-	//OnQuestStatusChanged.Broadcast(this);
+	OnQuestStatusChanged.Broadcast(this);
+	OnStatusChanged.Broadcast(this);
+}
+
+bool AQuest::IsCompleted() const
+{
+	if (bKeepObjectivesOrder && Objectives.IsValidIndex(Objectives.Num() - 1))
+	{
+		return Objectives[Objectives.Num() - 1]->bIsCompleted;
+	}
+
+	for (auto* Objective : Objectives)
+	{
+		if (Objective && !Objective->bIsCompleted)
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void AQuest::AddInteractObjective()

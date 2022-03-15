@@ -22,6 +22,10 @@
 #include "HASInventoryData.h"
 #include "InteractionComponent.h"
 #include "CollectionComponent.h"
+#include "QuestListComponent.h"
+#include "QuestList.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -86,6 +90,8 @@ AHASBaseCharacter::AHASBaseCharacter(const FObjectInitializer& ObjInit):
 
 	CollectionComponent = CreateDefaultSubobject<UCollectionComponent>("CollectionComponent");
 	CollectionComponent->SetupAttachment(GetRootComponent());
+
+	QuestListComponent = CreateDefaultSubobject<UQuestListComponent>(TEXT("QuestListComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -213,6 +219,30 @@ UStaticMeshComponent* AHASBaseCharacter::GetEquipComponent(EEquipSlot Slot)
 	}
 	TArray<UActorComponent*> Components = GetComponentsByTag(UStaticMeshComponent::StaticClass(), EquipTag);
 	return Components.Num() > 0 ? Cast<UStaticMeshComponent>(Components[0]) : nullptr;
+}
+
+void AHASBaseCharacter::ToggleQuestListVisibility()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	if (QuestList)
+	{
+		QuestList->RemoveFromParent();
+		QuestList = nullptr;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PC);
+	}
+	else
+	{
+		if (QuestListClass)
+		{
+			QuestList = CreateWidget<UQuestList>(GetWorld(), QuestListClass);
+			QuestList->Init(QuestListComponent);
+			QuestList->AddToViewport();
+			UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PC);
+			PC->SetShowMouseCursor(true);
+		}
+	}
+	
 }
 
 // Called every frame
