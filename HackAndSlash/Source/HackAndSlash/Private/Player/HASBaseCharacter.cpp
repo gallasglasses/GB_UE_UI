@@ -270,6 +270,29 @@ void AHASBaseCharacter::Tick(float DeltaTime)
 	
 }
 
+void AHASBaseCharacter::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+	if (Ar.IsSaveGame())
+	{
+		if (Ar.IsSaving())
+		{
+			FTransform CharacterTransform = GetActorTransform();
+			Ar << CharacterTransform;
+		}
+		if (Ar.IsLoading())
+		{
+			FTransform CharacterTransform;
+			Ar << CharacterTransform;
+			SetActorRelativeTransform(CharacterTransform);
+			auto PlayerController = GetWorld()->GetFirstPlayerController();
+			PlayerController->SetInitialLocationAndRotation(CharacterTransform.GetLocation(),CharacterTransform.GetRotation().Rotator());
+
+			GLog->Log(ELogVerbosity::Warning, TEXT("Loading Character"));
+		}
+	}
+}
+
 // Called to bind functionality to input
 void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
