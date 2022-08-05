@@ -39,6 +39,8 @@ bool USaveManager::IsSaveGameExist(const FString& SlotName) const
 
 void USaveManager::LoadGame(const FString& SlotName)
 {
+	//****Async Load Game****
+	
 	//if (!IsSaveGameExist(SlotName))
 	//{
 	//	return;
@@ -49,7 +51,10 @@ void USaveManager::LoadGame(const FString& SlotName)
 
 	//UGameplayStatics::AsyncLoadGameFromSlot(SlotName, 0, LoadDelegate);
 
-	const FString JsonPath = FPaths::ProjectSavedDir() + "SaveGames/TestFloat.json";
+
+	//****Json Load Game****
+
+	/*const FString JsonPath = FPaths::ProjectSavedDir() + "SaveGames/TestFloat.json";
 
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	if (FileManager.FileExists(*JsonPath))
@@ -65,17 +70,33 @@ void USaveManager::LoadGame(const FString& SlotName)
 		CurrentSave->LootSaveData = JsonSave.LootSaveData;
 	}
 
-	OnGameLoadedFunc(TEXT("JsonSave"), 0, CurrentSave);
+	OnGameLoadedFunc(TEXT("JsonSave"), 0, CurrentSave);*/
+
+	//****Serialize Load Game****
+
+	if (!IsSaveGameExist(SlotName))
+	{
+		return;
+	}
+
+	FAsyncLoadGameFromSlotDelegate LoadDelegate;
+	LoadDelegate.BindUObject(this, &USaveManager::OnGameLoadedFunc);
+
+	UGameplayStatics::AsyncLoadGameFromSlot(SlotName, 0, LoadDelegate);
 }
 
 void USaveManager::SaveGame(const FString& SlotName)
 {
+	//****Async Save Game****
+
 	/*FAsyncSaveGameToSlotDelegate SaveDelegate;
 	SaveDelegate.BindUObject(this, &ThisClass::OnGameSavedFunc);
 
 	UGameplayStatics::AsyncSaveGameToSlot(CurrentSave, SlotName, 0, SaveDelegate);*/
 
-	FJsonSave JsonSave;
+	//****Json Save Game****
+
+	/*FJsonSave JsonSave;
 	JsonSave.TestFloat = CurrentSave->TestFloat;
 	JsonSave.CharacterSaveData = CurrentSave->CharacterSaveData;
 	JsonSave.LootSaveData = CurrentSave->LootSaveData;
@@ -86,13 +107,22 @@ void USaveManager::SaveGame(const FString& SlotName)
 	const FString JsonPath = FPaths::ProjectSavedDir() + "SaveGames/TestFloat.json";
 	FFileHelper::SaveStringToFile(JsonString, *JsonPath);
 
-	OnGameSavedFunc(TEXT("Json"), 0, true);
+	OnGameSavedFunc(TEXT("Json"), 0, true);*/
+
+	//****Serialize Save Game****
+
+	FAsyncSaveGameToSlotDelegate SaveDelegate;
+	SaveDelegate.BindUObject(this,&USaveManager::OnGameSavedFunc);
+
+	CurrentSave->CollectData(GetWorld());
+	UGameplayStatics::AsyncSaveGameToSlot(CurrentSave, SlotName, 0, SaveDelegate);
 }
 
 void USaveManager::OnGameLoadedFunc(const FString& SlotName, const int32 UserIndex, USaveGame* SaveGame)
 {
 	CurrentSave = Cast<UHASSaveGame>(SaveGame);
 	OnGameLoaded.Broadcast(SlotName);
+	CurrentSave->ApplyData(GetWorld());
 }
 
 void USaveManager::OnGameSavedFunc(const FString& SlotName, const int32 UserIndex, bool bSuccess)

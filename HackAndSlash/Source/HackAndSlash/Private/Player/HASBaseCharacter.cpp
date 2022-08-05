@@ -270,6 +270,52 @@ void AHASBaseCharacter::Tick(float DeltaTime)
 	
 }
 
+void AHASBaseCharacter::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+	if (Ar.IsSaveGame())
+	{
+		if (Ar.IsSaving())
+		{
+			FTransform CharacterTransform = GetActorTransform();
+			Ar << CharacterTransform;
+
+			EquipComponent->Serialize(Ar);
+
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving Character"));
+		}
+		if (Ar.IsLoading())
+		{
+			FTransform CharacterTransform;
+			Ar << CharacterTransform;
+			SetActorRelativeTransform(CharacterTransform);
+			auto PlayerController = GetWorld()->GetFirstPlayerController();
+			PlayerController->SetInitialLocationAndRotation(CharacterTransform.GetLocation(),CharacterTransform.GetRotation().Rotator());
+
+			auto EquipItems = EquipComponent->GetItems();
+			for (auto EquipItem : EquipItems)
+			{
+				FInventoryItemInfo* EquipItemInfo = InventoryManagerComponent->GetItemData(EquipItem.Value.ID);
+				UnequipItem_Implementation((*EquipItemInfo).Equip, EquipItem.Value.ID);
+			}
+			EquipItems.Reset();
+			EquipComponent->Serialize(Ar);
+
+			EquipItems = EquipComponent->GetItems();
+			for (auto EquipItem : EquipItems)
+			{
+				FInventoryItemInfo* EquipItemInfo = InventoryManagerComponent->GetItemData(EquipItem.Value.ID);
+				EquipItem_Implementation((*EquipItemInfo).Equip, EquipItem.Value.ID);
+			}
+
+			GLog->Log(ELogVerbosity::Warning, TEXT("Loading Character"));
+		}
+		HealthComponent->Serialize(Ar);
+		InventoryComponent->Serialize(Ar);
+		//QuestListComponent->Serialize(Ar);
+	}
+}
+
 // Called to bind functionality to input
 void AHASBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

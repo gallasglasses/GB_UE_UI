@@ -91,6 +91,44 @@ void UHASInventoryComponent::ChangeKeyItem(const FInventorySlotInfo& ItemFrom, c
 	}
 }
 
+void UHASInventoryComponent::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+
+	if (Ar.IsSaveGame())
+	{
+		if (Ar.IsSaving())
+		{
+			int32 InvetorySize = Items.Num();
+			Ar << InvetorySize;
+			for (auto Item:Items)
+			{
+				Ar << Item.Key;
+				Ar << Item.Value.ID;
+				Ar << Item.Value.Count;
+			}
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving inventory component"));
+		}
+		else
+		{
+			Items.Reset();
+			int32 InventorySize;
+			FInventorySlotInfo InventorySlotInfo;
+			int32 InfoKey;
+			Ar << InventorySize;
+			for (int32 i = 0; i < InventorySize; i++)
+			{
+				Ar << InfoKey;
+				Ar << InventorySlotInfo.ID;
+				Ar << InventorySlotInfo.Count;
+
+				Items.Add(InfoKey, InventorySlotInfo);
+			}
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving inventory component"));
+		}
+	}
+}
+
 void UHASInventoryComponent::ClearItemsOfSameType()
 {
 	for (int32 i = 0; ItemsOfSameType.Num() != 0; i++)

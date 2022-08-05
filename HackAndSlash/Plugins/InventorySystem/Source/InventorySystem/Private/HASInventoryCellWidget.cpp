@@ -56,8 +56,8 @@ void UHASInventoryCellWidget::Clear()
 	if (ItemImage)
 	{
 		ItemImage->SetVisibility(ESlateVisibility::Collapsed);
-		ItemImage->SetBrush(FSlateBrush());
-		ItemVisualTexture = nullptr;
+		//ItemImage->SetBrush(FSlateBrush());
+		//ItemVisualTexture = nullptr;
 	}
 
 	if (ItemCountText)
@@ -102,10 +102,11 @@ void UHASInventoryCellWidget::NativeOnDragDetected(const FGeometry& InGeometry, 
 
 		if (DragVisualWidget && DragVisualWidget->ItemImage)
 		{
+			DragVisualWidget->ItemImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			DragVisualWidget->ItemImage->SetBrushFromTexture(ItemVisualTexture);
-			DragVisualWidget->ItemImage->SetVisibility(ESlateVisibility::Visible);
+			
+			DragVisualWidget->ItemCountText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			DragVisualWidget->ItemCountText->SetText(FText::FromString(FString::FromInt(ItemCountVisualText)));
-			DragVisualWidget->ItemCountText->SetVisibility(ESlateVisibility::Visible);
 		}
 
 		if (InventoryDragDropOperation)

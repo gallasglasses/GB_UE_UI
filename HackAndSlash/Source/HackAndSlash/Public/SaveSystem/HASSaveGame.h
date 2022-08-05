@@ -29,4 +29,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	USaveSystemSubsystem* SaveSystemSubsystem;
+
+	UPROPERTY()
+	TArray<uint8> Bytes;
+
+	void CollectData(UWorld* World);
+	void ApplyData(UWorld* World);
+
 };

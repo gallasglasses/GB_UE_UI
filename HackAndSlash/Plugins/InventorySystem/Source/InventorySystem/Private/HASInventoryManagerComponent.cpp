@@ -40,7 +40,7 @@ void UHASInventoryManagerComponent::Init(UHASInventoryComponent* InInventoryComp
 				//FString ItemDataStr = ItemData->Name.ToString() + ": " + FString::FromInt(Item.Value.Count);
 				//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Emerald, ItemDataStr);
 
-				ItemInfo->Icon.LoadSynchronous();
+				//ItemInfo->Icon.LoadSynchronous();
 				InventoryWidget->AddItem(Item.Value, *ItemInfo, Item.Key);
 			}
 		}
@@ -58,6 +58,7 @@ void UHASInventoryManagerComponent::RemoveInventory()
 	if (InventoryWidget && InventoryWidget->IsInViewport())
 	{
 		InventoryWidget->RemoveFromParent();
+		InventoryWidget = nullptr;
 	}
 }
 
@@ -66,6 +67,7 @@ void UHASInventoryManagerComponent::RemoveEquip()
 	if (EquipWidget && EquipWidget->IsInViewport())
 	{
 		EquipWidget->RemoveFromParent();
+		EquipWidget = nullptr;
 	}
 }
 
@@ -89,23 +91,44 @@ void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* Dragg
 	{
 		return;
 	}
-	const FInventorySlotInfo ToItem = DroppedTo->GetItem();
+	FInventorySlotInfo ToItem = DroppedTo->GetItem();
 
 	FInventorySlotInfo NewFromItem = ToItem;
 	FInventorySlotInfo NewToItem = FromItem;
 
 	const FInventoryItemInfo* FromItemInfo = GetItemData(FromItem.ID);
-	//const FInventoryItemInfo* ToItemInfo = ToItem.Count > 0 ? GetItemData(ToItem.ID) : nullptr;
+	const FInventoryItemInfo* ToItemInfo = ToItem.Count > 0 ? GetItemData(ToItem.ID) : nullptr;
 
 	const int32 ToItemAmount = ToInventory->GetMaxItemAmount(DroppedTo->IndexInInventory, *FromItemInfo);
-	if (FromInventory != ToInventory)
+
+	if (ToItemAmount == 0)
 	{
-		if (ToItemAmount == 0)
+		UE_LOG(LogTemp, Display, TEXT("ToItemAmount == 0"));
+		
+		if (Cast<UHASEquipInventoryComponent>(DroppedTo->GetParentInventoryWidget()))
 		{
+			UE_LOG(LogTemp, Display, TEXT("EquipInventory == 0"));
 			return;
 		}
-
-		if (ToItemAmount > 0)
+	}
+	else if (ToItemAmount < 0)
+	{
+		UE_LOG(LogTemp, Display, TEXT("ToItemAmount < 0"));
+		if (NewFromItem.ID == NewToItem.ID)
+		{
+			if (DroppedTo->IndexInInventory != DraggedFrom->IndexInInventory)
+			{
+				NewToItem.Count = FromItem.Count + NewFromItem.Count;
+				NewFromItem.Count = 0;
+				UE_LOG(LogTemp, Display, TEXT("same ID"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("same index and ID"));
+				return;
+			}
+		}
+		else
 		{
 			NewToItem.Count = FMath::Max(ToItemAmount, FromItem.Count);
 			if (FromItem.Count <= NewToItem.Count)
@@ -114,6 +137,10 @@ void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* Dragg
 				NewFromItem.Count = FromItem.Count - NewToItem.Count;
 			}
 		}
+	}
+	else//if (ToItemAmount > 0)
+	{
+		UE_LOG(LogTemp, Display, TEXT("ToItemAmount > 0"));
 	}
 
 	const FInventoryItemInfo* NewFromItemInfo = NewFromItem.Count > 0 ? GetItemData(NewFromItem.ID) : nullptr;
@@ -135,13 +162,13 @@ void UHASInventoryManagerComponent::OnItemDropped(UHASInventoryCellWidget* Dragg
 	}
 	else
 	{
-		DroppedTo->Clear();
 		DraggedFrom->Clear();
 
 		if (NewFromItemInfo)
 		{
 			DraggedFrom->AddItem(NewFromItem, *NewFromItemInfo);
 		}
+		DroppedTo->Clear();
 		DroppedTo->AddItem(NewToItem, *NewToItemInfo);
 
 		if (FromInventory == ToInventory)
@@ -304,8 +331,10 @@ void UHASInventoryManagerComponent::InitEquip(UHASInventoryComponent* InInventor
 	if (InInventoryComponent && EquipWidgetClass)
 	{
 		EquipWidget = CreateWidget<UHASInventoryWidget>(GetWorld(), EquipWidgetClass);
-		EquipWidget->ParentInventory = InInventoryComponent;
-		EquipWidget->OnItemDrop.AddUObject(this, &UHASInventoryManagerComponent::OnItemDropped);
 		EquipWidget->AddToViewport();
+		EquipWidget->ParentInventory = InInventoryComponent;
+
+		EquipWidget->OnItemDrop.AddUObject(this, &UHASInventoryManagerComponent::OnItemDropped);
+		
 	}
 }

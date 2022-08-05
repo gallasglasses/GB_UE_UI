@@ -38,6 +38,28 @@ bool UHASHealthComponent::IsHealthFull() const
 	return FMath::IsNearlyEqual(Health, MaxHealth);
 }
 
+void UHASHealthComponent::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+
+	if (Ar.IsSaveGame())
+	{
+		if (Ar.IsSaving())
+		{
+			float HealthToAr = GetHealth();
+			Ar << HealthToAr;
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving health component"));
+		}
+		else
+		{
+			float HealthFromAr;
+			Ar << HealthFromAr;
+			SetHealth(HealthFromAr);
+			GLog->Log(ELogVerbosity::Warning, TEXT("Loading health component"));
+		}
+	}
+}
+
 bool UHASHealthComponent::IsDead() const
 {
 	return FMath::IsNearlyZero(Health);

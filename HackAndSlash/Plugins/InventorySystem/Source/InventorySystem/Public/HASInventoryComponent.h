@@ -29,6 +29,7 @@ public:
 	virtual void SetItem(int32 SlotIndex, const FInventorySlotInfo& Item);
 	virtual void ClearItem(int32 SlotIndex);
 	virtual void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo);
+	virtual void Serialize(FArchive& Ar);
 
 	void SetItemOfSameType(int32 SlotIndex, const FInventorySlotInfo& Item);
 	void ClearItems();

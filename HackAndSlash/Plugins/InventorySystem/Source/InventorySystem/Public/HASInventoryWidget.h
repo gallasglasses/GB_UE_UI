@@ -44,6 +44,33 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 		UHASInventoryCellWidget* GoldCell;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* RightHandCellWeaponry;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* LeftHandCellWeaponry;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* AddRightHandCellWeaponry;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* AddLeftHandCellWeaponry;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* HeadCellEquip;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* HandsCellEquip;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* BodyCellEquip;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* LegsCellEquip;
+						
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
+		UHASInventoryCellWidget* FeetCellEquip;
+
 	UPROPERTY(meta = (BindWidgetOptional))
 		UButton* AllItemsButton;
 
@@ -82,6 +109,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 		TArray<UHASInventoryCellWidget*> CellWidgets;
+
+	UPROPERTY(BlueprintReadWrite)
+		TArray<UHASInventoryCellWidget*> EquipCellWidgets;
 
 	UHASInventoryCellWidget* CreateCell();
 

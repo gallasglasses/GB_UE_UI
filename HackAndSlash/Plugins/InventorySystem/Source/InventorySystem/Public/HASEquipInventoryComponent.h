@@ -26,4 +26,6 @@ public:
 	virtual void ClearItem(int32 SlotIndex) override;
 
 	virtual void ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo) override;
+	
+	virtual void Serialize(FArchive& Ar);
 };
