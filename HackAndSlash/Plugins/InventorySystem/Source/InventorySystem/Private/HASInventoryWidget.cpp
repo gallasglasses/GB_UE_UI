@@ -97,6 +97,73 @@ bool UHASInventoryWidget::AddItem(const FInventorySlotInfo& SlotInfo, const FInv
 			return Found->AddItem(SlotInfo, ItemInfo);
 		}
 	}
+
+	if (ItemInfo.Type == EItemType::IT_Equipment)
+	{
+		UE_LOG(LogTemp, Display, TEXT("EquipInventory Cell"));
+
+		switch (ItemInfo.Equip)
+		{
+		case EEquipSlot::ES_None:
+			break;
+		case EEquipSlot::ES_RightHandWeaponry:
+			if (RightHandCellWeaponry)
+			{
+				return RightHandCellWeaponry->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_LeftHandWeaponry:
+			if (LeftHandCellWeaponry)
+			{
+				return LeftHandCellWeaponry->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_AddRightHandWeaponry:
+			if (AddRightHandCellWeaponry)
+			{
+				return AddRightHandCellWeaponry->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_AddLeftHandWeaponry:
+			if (AddLeftHandCellWeaponry)
+			{
+				return AddLeftHandCellWeaponry->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_HeadEquip:
+			if (HeadCellEquip)
+			{
+				return HeadCellEquip->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_ArmsEquip:
+			if (HandsCellEquip)
+			{
+				return HandsCellEquip->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_BodyEquip:
+			if (BodyCellEquip)
+			{
+				return BodyCellEquip->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_LegsEquip:
+			if (LegsCellEquip)
+			{
+				return LegsCellEquip->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		case EEquipSlot::ES_FeetEquip:
+			if (FeetCellEquip)
+			{
+				return FeetCellEquip->AddItem(SlotInfo, ItemInfo);
+			}
+			break;
+		default:
+			break;
+		}
+	}
 	return false;
 }
 

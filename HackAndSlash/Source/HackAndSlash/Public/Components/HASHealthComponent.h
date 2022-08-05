@@ -31,6 +31,8 @@ public:
 	bool TryToAddHealth(float HealthAmount);
 	bool IsHealthFull() const;
 
+	virtual void Serialize(FArchive& Ar);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))

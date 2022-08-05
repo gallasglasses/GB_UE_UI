@@ -37,9 +37,9 @@ void UHASEquipInventoryComponent::SetItem(int32 SlotIndex, const FInventorySlotI
 		return;
 	}
 
-	const FInventorySlotInfo* EquippedItemInfo = GetItem(SlotIndex);
 	//EEquipSlot Equip = EquipSlots.Contains(SlotIndex) ? EquipSlots.FindChecked(SlotIndex) : EEquipSlot::ES_None;
 	EEquipSlot Equip = EquipSlots.FindChecked(SlotIndex);
+	const FInventorySlotInfo* EquippedItemInfo = GetItem(SlotIndex);
 
 	if (EquippedItemInfo)
 	{
@@ -60,8 +60,8 @@ void UHASEquipInventoryComponent::ClearItem(int32 SlotIndex)
 		return;
 	}
 
-	const FInventorySlotInfo* EquippedItemInfo = GetItem(SlotIndex);
 	EEquipSlot Equip = EquipSlots.FindChecked(SlotIndex);
+	const FInventorySlotInfo* EquippedItemInfo = GetItem(SlotIndex);
 
 	if (EquippedItemInfo)
 	{
@@ -74,4 +74,40 @@ void UHASEquipInventoryComponent::ClearItem(int32 SlotIndex)
 void UHASEquipInventoryComponent::ChangeKeyItem(const FInventorySlotInfo& ItemFrom, const int32 IndexFrom, const FInventorySlotInfo& ItemTo, const int32 IndexTo)
 {
 	return;
+}
+
+void UHASEquipInventoryComponent::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+
+	if (Ar.IsSaveGame())
+	{
+		if (Ar.IsSaving())
+		{
+			int32 InvetorySize = EquipSlots.Num();
+			Ar << InvetorySize;
+			for (auto EquipSlot : EquipSlots)
+			{
+				Ar << EquipSlot.Key;
+				Ar << EquipSlot.Value;
+			}
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving equip component"));
+		}
+		else
+		{
+			Items.Reset();
+			int32 InventorySize;
+			EEquipSlot EquipSlotInfo;
+			int32 InfoKey;
+			Ar << InventorySize;
+			for (int32 i = 0; i < InventorySize; i++)
+			{
+				Ar << InfoKey;
+				Ar << EquipSlotInfo;
+
+				EquipSlots.Add(InfoKey, EquipSlotInfo);
+			}
+			GLog->Log(ELogVerbosity::Warning, TEXT("Saving equip component"));
+		}
+	}
 }
